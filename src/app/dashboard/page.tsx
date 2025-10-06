@@ -49,6 +49,7 @@ export default function DashboardPage() {
   // Type assertion to include 'role' and 'name' in session.user
   type UserWithRole = { name?: string; role?: string }
   const user = session?.user as UserWithRole | undefined
+  const userRole = user?.role
   const router = useRouter()
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [consultations, setConsultations] = useState<Consultation[]>([])
@@ -60,13 +61,15 @@ export default function DashboardPage() {
     if (!session) {
       return
     }
-    if (user?.role === 'ADMIN') {
+    const userRole = user?.role
+
+    if (userRole === 'ADMIN') {
       router.push('/admin')
       return
     }
 
     fetchUserData()
-  }, [session, status, router])
+  }, [status, router, userRole])
 
   const fetchUserData = async () => {
     try {

@@ -30,24 +30,24 @@ export default function NewSubscriptionPage() {
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState('credit_card')
 
-  const fetchPlan = async () => {
-    try {
-      const response = await fetch(`/api/plans/${planId}`)
-      if (response.ok) {
-        const data = await response.json()
-        setPlan(data.plan)
-      } else {
-        router.push('/plans')
-      }
-    } catch (error) {
-      console.error('Erro ao carregar plano:', error)
-      router.push('/plans')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   useEffect(() => {
+    const fetchPlan = async () => {
+      try {
+        const response = await fetch(`/api/plans/${planId}`)
+        if (response.ok) {
+          const data = await response.json()
+          setPlan(data.plan)
+        } else {
+          router.push('/plans')
+        }
+      } catch (error) {
+        console.error('Erro ao carregar plano:', error)
+        router.push('/plans')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
     if (!session) {
       router.push('/auth/login')
       return
