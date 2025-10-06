@@ -69,7 +69,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { name, email, password, role } = await request.json()
+    const body: { name: string; email: string; password: string; role: string } = await request.json()
+    const { name, email, password, role } = body
 
     if (!name || !email || !password || !role) {
       return NextResponse.json(
