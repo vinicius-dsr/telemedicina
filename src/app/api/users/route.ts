@@ -13,11 +13,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o usuário já existe
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    })
-
+    const existingUser = await prisma.user.findUnique({ where: { email } })
     if (existingUser) {
       return NextResponse.json(
         { error: 'Usuário já existe com este email' },
@@ -25,28 +21,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Criar usuário
     const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        role: 'CLIENT'
-      }
+      data: { name, email, password: hashedPassword, role: 'CLIENT' },
     })
 
-    // Criar notificação para admin sobre novo usuário
+    // Cria notificação sem usar `as any`
     try {
-      await (prisma as any).notification.create({
+      await prisma.notification.create({
         data: {
           type: 'new_user',
           title: 'Novo Usuário Cadastrado',
           message: `${user.name} se cadastrou no sistema`,
-          data: { userId: user.id }
-        }
+          data: { userId: user.id },
+        },
       })
     } catch (err) {
       console.error('Erro ao criar notificação de novo usuário:', err)
