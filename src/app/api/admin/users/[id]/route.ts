@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
+import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
@@ -10,9 +11,16 @@ export async function GET(
   try {
     const session = await getServerSession(authOptions)
 
-    const sessionUser = (session as any)?.user
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Acesso negado' },
+        { status: 403 }
+      )
+    }
 
-    if (!session || sessionUser?.role !== 'ADMIN') {
+    const sessionUser = (session as Session).user
+
+    if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
@@ -68,9 +76,16 @@ export async function PUT(
   try {
     const session = await getServerSession(authOptions)
 
-    const sessionUser = (session as any)?.user
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Acesso negado' },
+        { status: 403 }
+      )
+    }
 
-    if (!session || sessionUser?.role !== 'ADMIN') {
+    const sessionUser = (session as Session).user
+
+    if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
@@ -149,9 +164,16 @@ export async function DELETE(
   try {
     const session = await getServerSession(authOptions)
 
-    const sessionUser = (session as any)?.user
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Acesso negado' },
+        { status: 403 }
+      )
+    }
 
-    if (!session || sessionUser?.role !== 'ADMIN') {
+    const sessionUser = (session as Session).user
+
+    if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
@@ -173,7 +195,7 @@ export async function DELETE(
     }
 
     // Não permitir excluir o próprio usuário
-  if (user.id === (session as any).user.id) {
+  if (user.id === sessionUser.id) {
       return NextResponse.json(
         { error: 'Você não pode excluir sua própria conta' },
         { status: 400 }

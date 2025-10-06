@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
+import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
@@ -7,9 +8,9 @@ export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
-    const sessionUser = (session as any)?.user
+  const sessionUser = (session as Session | null)?.user
 
-    if (!session || sessionUser?.role !== 'ADMIN') {
+  if (!session || sessionUser?.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
@@ -78,7 +79,17 @@ export async function GET(_request: NextRequest) {
     })
 
     // Gerar notificações
-    const notifications = []
+    type Notification = {
+      id: string
+      type: string
+      title: string
+      message: string
+      createdAt: Date
+      isRead: boolean
+      data: Record<string, any>
+    }
+
+    const notifications: Notification[] = []
 
     // Notificações de novas consultas
     recentConsultations.forEach(consultation => {
