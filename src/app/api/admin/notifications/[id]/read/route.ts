@@ -4,27 +4,24 @@ import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function POST(
+export const POST = async (
   _request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  context: { params: { id: string } }
+): Promise<NextResponse> => {
   try {
+    const { id } = context.params
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const session = (await getServerSession(authOptions as any)) as Session | null
     const sessionUser = session?.user
 
     if (!session || sessionUser?.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'Acesso negado' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
-    // Marcar notificação como lida no banco
-    const id = params.id
-    await prisma.notification.update({ 
-      where: { id }, 
-      data: { isRead: true } 
+    await prisma.notification.update({
+      where: { id },
+      data: { isRead: true },
     })
 
     return NextResponse.json({ message: 'Notificação marcada como lida' })
