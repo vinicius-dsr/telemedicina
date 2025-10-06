@@ -4,10 +4,9 @@ import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     const session = (await getServerSession(authOptions)) as Session | null
-
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
@@ -29,7 +28,6 @@ export async function GET(_request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = (await getServerSession(authOptions)) as Session | null
-
     if (!session || !session.user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
@@ -63,8 +61,8 @@ export async function POST(request: NextRequest) {
 
     // Criar notificação para admin sobre nova consulta
     try {
-      const userName = (session.user as any)?.name || 'Usuário'
-      await (prisma as any).notification.create({
+      const userName = (session.user as { name?: string })?.name || 'Usuário'
+      await prisma.notification.create({
         data: {
           type: 'new_consultation',
           title: 'Nova Consulta Agendada',

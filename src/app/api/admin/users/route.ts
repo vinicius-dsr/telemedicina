@@ -8,9 +8,8 @@ import bcrypt from 'bcryptjs'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_request: NextRequest) {
   try {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const session = await getServerSession(authOptions as any)
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session = await getServerSession(authOptions as any)
     if (!session) {
       return NextResponse.json(
         { error: 'Acesso negado' },
@@ -18,9 +17,8 @@ export async function GET(_request: NextRequest) {
       )
     }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sessionUser = (session as any).user
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sessionUser = (session as any).user
     if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
@@ -45,9 +43,7 @@ export async function GET(_request: NextRequest) {
       }
     })
 
-    return NextResponse.json({
-      users
-    })
+    return NextResponse.json({ users })
   } catch (error) {
     console.error('Erro ao buscar usuários:', error)
     return NextResponse.json(
@@ -59,9 +55,8 @@ export async function GET(_request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const session = await getServerSession(authOptions as any)
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session = await getServerSession(authOptions as any)
     if (!session) {
       return NextResponse.json(
         { error: 'Acesso negado' },
@@ -69,8 +64,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const sessionUser = (session as Session).user
-
+    const sessionUser = (session as { user: { role: string } }).user
     if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },

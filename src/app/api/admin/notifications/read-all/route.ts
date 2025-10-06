@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -7,10 +7,9 @@ import { prisma } from '@/lib/prisma'
 export async function POST() {
   try {
     const session = (await getServerSession(authOptions)) as Session | null
-
     const sessionUser = (session as unknown as { user?: { role?: string } })?.user
 
-  if (!session || sessionUser?.role !== 'ADMIN') {
+    if (!session || sessionUser?.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
@@ -18,9 +17,12 @@ export async function POST() {
     }
 
     // Marcar todas notificações como lidas no banco
-    await (prisma as any).notification.updateMany({ where: { isRead: false }, data: { isRead: true } })
+    await prisma.notification.updateMany({ 
+      where: { isRead: false }, 
+      data: { isRead: true } 
+    })
 
-  return NextResponse.json({ message: 'Todas as notificações foram marcadas como lidas' })
+    return NextResponse.json({ message: 'Todas as notificações foram marcadas como lidas' })
   } catch (error) {
     console.error('Erro ao marcar todas as notificações como lidas:', error)
     return NextResponse.json(

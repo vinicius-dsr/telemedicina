@@ -11,7 +11,6 @@ export async function POST(
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const session = (await getServerSession(authOptions as any)) as Session | null
-
     const sessionUser = session?.user
 
     if (!session || sessionUser?.role !== 'ADMIN') {
@@ -21,9 +20,12 @@ export async function POST(
       )
     }
 
-  // Marcar notificação como lida no banco
-  const id = params.id
-  await (prisma as any).notification.update({ where: { id }, data: { isRead: true } })
+    // Marcar notificação como lida no banco
+    const id = params.id
+    await prisma.notification.update({ 
+      where: { id }, 
+      data: { isRead: true } 
+    })
 
     return NextResponse.json({ message: 'Notificação marcada como lida' })
   } catch (error) {
