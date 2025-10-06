@@ -3,19 +3,17 @@ import { getServerSession } from 'next-auth/next'
 import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(
   _request: NextRequest,
   { params: _params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const session = await getServerSession(authOptions as any)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session = (await getServerSession(authOptions as any)) as Session | null
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sessionUser = (session as any)?.user
+    const sessionUser = session?.user
 
-  if (!session || sessionUser?.role !== 'ADMIN') {
+    if (!session || sessionUser?.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
