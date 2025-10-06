@@ -33,9 +33,22 @@ interface Consultation {
   status: string
   scheduledAt: string
 }
+// Remove module augmentation here if you already have it in src/types/next-auth.d.ts
+// declare module 'next-auth' {
+//   interface User {
+//     role?: string
+//   }
+//   interface Session {
+//     user?: DefaultSession['user'] & { role?: string }
+//   }
+// }
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
+
+  // Type assertion to include 'role' and 'name' in session.user
+  type UserWithRole = { name?: string; role?: string }
+  const user = session?.user as UserWithRole | undefined
   const router = useRouter()
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [consultations, setConsultations] = useState<Consultation[]>([])
@@ -45,11 +58,9 @@ export default function DashboardPage() {
     if (status === 'loading') return
 
     if (!session) {
-      router.push('/auth/login')
       return
     }
-
-    if (session?.user?.role === 'ADMIN') {
+    if (user?.role === 'ADMIN') {
       router.push('/admin')
       return
     }
@@ -102,7 +113,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <Stethoscope className="h-8 w-8 text-blue-600 mr-2" />
+              <span className="text-gray-700">Olá, {user?.name ?? 'Usuário'}</span>
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
