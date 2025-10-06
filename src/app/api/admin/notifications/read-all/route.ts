@@ -4,9 +4,9 @@ import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function POST(_request: NextRequest) {
+export async function POST() {
   try {
-    const session = (await getServerSession(authOptions as any)) as Session | null
+    const session = (await getServerSession(authOptions)) as Session | null
 
     const sessionUser = (session as unknown as { user?: { role?: string } })?.user
 
