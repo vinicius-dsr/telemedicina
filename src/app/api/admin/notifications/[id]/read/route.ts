@@ -4,12 +4,17 @@ import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export const POST = async (
+type ContextParam =
+  | { params: { id: string } }
+  | { params: Promise<{ id: string }> }
+
+export async function POST(
   _request: NextRequest,
-  context: { params: { id: string } }
-): Promise<NextResponse> => {
+  context: ContextParam
+): Promise<NextResponse> {
   try {
-    const { id } = context.params
+    const params = await Promise.resolve(context.params)
+    const id = (await params).id
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const session = (await getServerSession(authOptions as any)) as Session | null
@@ -27,9 +32,6 @@ export const POST = async (
     return NextResponse.json({ message: 'Notificação marcada como lida' })
   } catch (error) {
     console.error('Erro ao marcar notificação como lida:', error)
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
