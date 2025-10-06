@@ -6,6 +6,8 @@ import bcrypt from 'bcryptjs'
 
 type UserRole = 'ADMIN' | 'CLIENT'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
