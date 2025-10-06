@@ -75,8 +75,9 @@ export default function EditUserPage() {
       router.push('/auth/login')
       return
     }
+    const userRole = (session?.user as unknown as { role?: string })?.role
 
-    if (session.user.role !== 'ADMIN') {
+    if (userRole !== 'ADMIN') {
       router.push('/dashboard')
       return
     }
@@ -184,7 +185,9 @@ export default function EditUserPage() {
     )
   }
 
-  if (!session || session.user.role !== 'ADMIN' || !user) {
+  const userRole = (session?.user as unknown as { role?: string })?.role
+
+  if (!session || userRole !== 'ADMIN' || !user) {
     return null
   }
 
