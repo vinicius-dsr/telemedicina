@@ -4,96 +4,46 @@ import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-<<<<<<< HEAD
-export async function GET(request: NextRequest) {
-=======
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_request: NextRequest) {
->>>>>>> fe0724f4c2988e0aa2d605c3f059fcba2fcabd1a
   try {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const session = await getServerSession(authOptions as any)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session = await getServerSession(authOptions as any)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sessionUser = (session as any)?.user
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sessionUser = (session as any)?.user
 
-  if (!session || sessionUser?.role !== 'ADMIN') {
-      return NextResponse.json(
-        { error: 'Acesso negado' },
-        { status: 403 }
-      )
+    if (!session || sessionUser?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
     // Buscar estatísticas
-    const [
-      totalUsers,
-      activeSubscriptions,
-      totalConsultations,
-      monthlyRevenue,
-      recentUsers,
-      recentConsultations
-    ] = await Promise.all([
-      prisma.user.count(),
-      prisma.subscription.count({
-        where: { status: 'ACTIVE' }
-      }),
-      prisma.consultation.count(),
-      prisma.subscription.aggregate({
-        where: { 
-          status: 'ACTIVE',
-          startDate: {
-            gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-          }
-        },
-        _sum: {
-          plan: {
-            select: {
-              price: true
-            }
-          }
-        }
-      }),
-      prisma.user.findMany({
-        take: 5,
-        orderBy: { createdAt: 'desc' },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          createdAt: true
-        }
-      }),
-      prisma.consultation.findMany({
-        take: 5,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          user: {
-            select: {
-              name: true
-            }
-          }
-        }
-      })
-    ])
+    const [totalUsers, activeSubscriptions, totalConsultations, recentUsers, recentConsultations] =
+      await Promise.all([
+        prisma.user.count(),
+        prisma.subscription.count({ where: { status: 'ACTIVE' } }),
+        prisma.consultation.count(),
+        prisma.user.findMany({
+          take: 5,
+          orderBy: { createdAt: 'desc' },
+          select: { id: true, name: true, email: true, createdAt: true }
+        }),
+        prisma.consultation.findMany({
+          take: 5,
+          orderBy: { createdAt: 'desc' },
+          include: { user: { select: { name: true } } }
+        })
+      ])
 
-    // Calcular receita mensal
+    // Calcular receita mensal a partir das assinaturas ativas do mês
     const subscriptions = await prisma.subscription.findMany({
-      where: { 
+      where: {
         status: 'ACTIVE',
-        startDate: {
-          gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-        }
+        startDate: { gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1) }
       },
-      include: {
-        plan: {
-          select: {
-            price: true
-          }
-        }
-      }
+      include: { plan: { select: { price: true } } }
     })
 
-    const monthlyRevenue = subscriptions.reduce((sum, sub) => sum + sub.plan.price, 0)
+    const monthlyRevenue = subscriptions.reduce((sum, sub) => sum + (sub.plan?.price ?? 0), 0)
 
     return NextResponse.json({
       totalUsers,
@@ -105,9 +55,6 @@ export async function GET(_request: NextRequest) {
     })
   } catch (error) {
     console.error('Erro ao buscar estatísticas:', error)
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
