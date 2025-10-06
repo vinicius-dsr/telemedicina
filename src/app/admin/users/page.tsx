@@ -60,7 +60,9 @@ export default function UsersPage() {
       return
     }
 
-    if (session.user.role !== 'ADMIN') {
+    const userRole = (session?.user as unknown as { role?: string })?.role
+
+    if (userRole !== 'ADMIN') {
       router.push('/dashboard')
       return
     }
@@ -190,7 +192,9 @@ export default function UsersPage() {
     )
   }
 
-  if (!session || session.user.role !== 'ADMIN') {
+  const userRole = (session?.user as unknown as { role?: string })?.role
+
+  if (!session || userRole !== 'ADMIN') {
     return null
   }
 
