@@ -9,7 +9,8 @@ import {
   Clock, 
   Heart, 
   Smartphone,
-  CheckCircle
+  CheckCircle,
+  Star
 } from 'lucide-react'
 
 export default function HomePage() {

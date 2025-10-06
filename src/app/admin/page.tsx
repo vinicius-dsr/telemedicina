@@ -11,12 +11,11 @@ import {
   Stethoscope, 
   DollarSign, 
   TrendingUp,
+  Calendar,
   FileText,
   Settings,
   BarChart3
 } from 'lucide-react'
-import Link from 'next/link'
-import NotificationCenter from '@/components/notifications/NotificationCenter'
 
 interface DashboardStats {
   totalUsers: number
@@ -181,12 +180,10 @@ export default function AdminDashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <Users className="h-8 w-8 text-blue-600" />
-                <Link href="/admin/users">
-                  <Button size="sm">
-                    <BarChart3 className="h-4 w-4 mr-1" />
-                    Gerenciar
-                  </Button>
-                </Link>
+                <Button size="sm">
+                  <BarChart3 className="h-4 w-4 mr-1" />
+                  Ver todos
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -240,92 +237,85 @@ export default function AdminDashboardPage() {
           </Card>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Notifications */}
-          <div className="lg:col-span-1">
-            <NotificationCenter />
-          </div>
-
-          <div className="lg:col-span-2 space-y-8">
-            {/* Recent Users */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Usuários Recentes</CardTitle>
-                <CardDescription>
-                  Novos usuários cadastrados
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {stats?.recentUsers && stats.recentUsers.length > 0 ? (
-                  <div className="space-y-4">
-                    {stats.recentUsers.slice(0, 5).map((user) => (
-                      <div key={user.id} className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{user.name}</p>
-                          <p className="text-sm text-gray-600">{user.email}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm text-gray-500">
-                            {new Date(user.createdAt).toLocaleDateString('pt-BR')}
-                          </p>
-                        </div>
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Recent Users */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Usuários Recentes</CardTitle>
+              <CardDescription>
+                Novos usuários cadastrados
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {stats?.recentUsers && stats.recentUsers.length > 0 ? (
+                <div className="space-y-4">
+                  {stats.recentUsers.slice(0, 5).map((user) => (
+                    <div key={user.id} className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{user.name}</p>
+                        <p className="text-sm text-gray-600">{user.email}</p>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>Nenhum usuário encontrado</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Recent Consultations */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Consultas Recentes</CardTitle>
-                <CardDescription>
-                  Últimas consultas agendadas
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {stats?.recentConsultations && stats.recentConsultations.length > 0 ? (
-                  <div className="space-y-4">
-                    {stats.recentConsultations.slice(0, 5).map((consultation) => (
-                      <div key={consultation.id} className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">{consultation.title}</p>
-                          <p className="text-sm text-gray-600">{consultation.user.name}</p>
-                        </div>
-                        <div className="text-right">
-                          <Badge 
-                            variant={
-                              consultation.status === 'COMPLETED' ? 'default' :
-                              consultation.status === 'SCHEDULED' ? 'secondary' :
-                              'destructive'
-                            }
-                          >
-                            {consultation.status === 'COMPLETED' ? 'Concluída' :
-                             consultation.status === 'SCHEDULED' ? 'Agendada' :
-                             consultation.status === 'CANCELLED' ? 'Cancelada' : 'Em andamento'}
-                          </Badge>
-                          <p className="text-sm text-gray-500 mt-1">
-                            {new Date(consultation.scheduledAt).toLocaleDateString('pt-BR')}
-                          </p>
-                        </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">
+                          {new Date(user.createdAt).toLocaleDateString('pt-BR')}
+                        </p>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <Stethoscope className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>Nenhuma consulta encontrada</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>Nenhum usuário encontrado</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Recent Consultations */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Consultas Recentes</CardTitle>
+              <CardDescription>
+                Últimas consultas agendadas
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {stats?.recentConsultations && stats.recentConsultations.length > 0 ? (
+                <div className="space-y-4">
+                  {stats.recentConsultations.slice(0, 5).map((consultation) => (
+                    <div key={consultation.id} className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{consultation.title}</p>
+                        <p className="text-sm text-gray-600">{consultation.user.name}</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge 
+                          variant={
+                            consultation.status === 'COMPLETED' ? 'default' :
+                            consultation.status === 'SCHEDULED' ? 'secondary' :
+                            'destructive'
+                          }
+                        >
+                          {consultation.status === 'COMPLETED' ? 'Concluída' :
+                           consultation.status === 'SCHEDULED' ? 'Agendada' :
+                           consultation.status === 'CANCELLED' ? 'Cancelada' : 'Em andamento'}
+                        </Badge>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {new Date(consultation.scheduledAt).toLocaleDateString('pt-BR')}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Stethoscope className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>Nenhuma consulta encontrada</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

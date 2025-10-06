@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
@@ -19,6 +19,7 @@ export async function GET(_request: NextRequest) {
       totalUsers,
       activeSubscriptions,
       totalConsultations,
+      monthlyRevenue,
       recentUsers,
       recentConsultations
     ] = await Promise.all([
@@ -27,6 +28,21 @@ export async function GET(_request: NextRequest) {
         where: { status: 'ACTIVE' }
       }),
       prisma.consultation.count(),
+      prisma.subscription.aggregate({
+        where: { 
+          status: 'ACTIVE',
+          startDate: {
+            gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+          }
+        },
+        _sum: {
+          plan: {
+            select: {
+              price: true
+            }
+          }
+        }
+      }),
       prisma.user.findMany({
         take: 5,
         orderBy: { createdAt: 'desc' },
