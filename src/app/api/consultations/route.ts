@@ -6,16 +6,16 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(_request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = (await getServerSession(authOptions)) as Session | null
 
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Não autorizado' },
         { status: 401 }
       )
     }
 
-  const sessionUser = session.user
+    const sessionUser = session.user
 
     const consultations = await prisma.consultation.findMany({
       where: {
@@ -40,9 +40,9 @@ export async function GET(_request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = (await getServerSession(authOptions)) as Session | null
 
-    if (!session) {
+    if (!session || !session.user) {
       return NextResponse.json(
         { error: 'Não autorizado' },
         { status: 401 }
