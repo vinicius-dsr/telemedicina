@@ -1,8 +1,8 @@
-import { NextAuthOptions } from 'next-auth'
+// removed typed import from next-auth to avoid build-time type export issues
 import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { prisma } from './prisma'
-
+import type { NextAuthOptions } from 'next-auth'
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({

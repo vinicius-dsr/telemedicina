@@ -1,13 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
+import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
+<<<<<<< HEAD
 export async function GET(request: NextRequest) {
+=======
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function GET(_request: NextRequest) {
+>>>>>>> fe0724f4c2988e0aa2d605c3f059fcba2fcabd1a
   try {
-    const session = await getServerSession(authOptions)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const session = await getServerSession(authOptions as any)
 
-    if (!session || session.user.role !== 'ADMIN') {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sessionUser = (session as any)?.user
+
+  if (!session || sessionUser?.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }

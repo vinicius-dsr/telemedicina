@@ -1,7 +1,8 @@
-'use client'
+ 'use client'
 
 import { useState } from 'react'
 import { signIn, getSession } from 'next-auth/react'
+import type { Session } from 'next-auth'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,8 +32,8 @@ export default function LoginPage() {
       if (result?.error) {
         setError('Credenciais inválidas')
       } else {
-        const session = await getSession()
-        if (session?.user?.role === 'ADMIN') {
+  const session = (await getSession()) as Session | null
+  if (session?.user?.role === 'ADMIN') {
           router.push('/admin')
         } else {
           router.push('/dashboard')

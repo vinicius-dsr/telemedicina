@@ -31,6 +31,26 @@ export default function NewSubscriptionPage() {
   const [paymentMethod, setPaymentMethod] = useState('credit_card')
 
   useEffect(() => {
+<<<<<<< HEAD
+=======
+    const fetchPlan = async () => {
+      try {
+        const response = await fetch(`/api/plans/${planId}`)
+        if (response.ok) {
+          const data = await response.json()
+          setPlan(data.plan)
+        } else {
+          router.push('/plans')
+        }
+      } catch (error) {
+        console.error('Erro ao carregar plano:', error)
+        router.push('/plans')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+>>>>>>> fe0724f4c2988e0aa2d605c3f059fcba2fcabd1a
     if (!session) {
       router.push('/auth/login')
       return
@@ -43,6 +63,7 @@ export default function NewSubscriptionPage() {
     }
   }, [session, planId, router])
 
+<<<<<<< HEAD
   const fetchPlan = async () => {
     try {
       const response = await fetch(`/api/plans/${planId}`)
@@ -60,6 +81,8 @@ export default function NewSubscriptionPage() {
     }
   }
 
+=======
+>>>>>>> fe0724f4c2988e0aa2d605c3f059fcba2fcabd1a
   const handleSubscribe = async () => {
     if (!plan) return
 

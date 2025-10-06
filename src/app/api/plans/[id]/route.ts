@@ -3,12 +3,13 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const plan = await prisma.plan.findUnique({
       where: {
-        id: params.id,
+        id,
         isActive: true
       }
     })

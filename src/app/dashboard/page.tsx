@@ -33,29 +33,27 @@ interface Consultation {
   status: string
   scheduledAt: string
 }
+// Remove module augmentation here if you already have it in src/types/next-auth.d.ts
+// declare module 'next-auth' {
+//   interface User {
+//     role?: string
+//   }
+//   interface Session {
+//     user?: DefaultSession['user'] & { role?: string }
+//   }
+// }
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
+
+  // Type assertion to include 'role' and 'name' in session.user
+  type UserWithRole = { name?: string; role?: string }
+  const user = session?.user as UserWithRole | undefined
+  const userRole = user?.role
   const router = useRouter()
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [consultations, setConsultations] = useState<Consultation[]>([])
   const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    if (status === 'loading') return
-
-    if (!session) {
-      router.push('/auth/login')
-      return
-    }
-
-    if (session.user.role === 'ADMIN') {
-      router.push('/admin')
-      return
-    }
-
-    fetchUserData()
-  }, [session, status, router])
 
   const fetchUserData = async () => {
     try {
@@ -80,6 +78,22 @@ export default function DashboardPage() {
     }
   }
 
+  useEffect(() => {
+    if (status === 'loading') return
+
+    if (!session) {
+      return
+    }
+    const userRole = user?.role
+
+    if (userRole === 'ADMIN') {
+      router.push('/admin')
+      return
+    }
+
+    fetchUserData()
+  }, [status, router, userRole, session, user?.role, fetchUserData])
+
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -102,11 +116,11 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <Stethoscope className="h-8 w-8 text-blue-600 mr-2" />
+              <span className="text-gray-700">Olá, {user?.name ?? 'Usuário'}</span>
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Olá, {session.user.name}</span>
+              <span className="text-gray-700">Olá, {session.user?.name ?? 'Usuário'}</span>
               <Button variant="outline" size="sm">
                 <Settings className="h-4 w-4 mr-2" />
                 Configurações

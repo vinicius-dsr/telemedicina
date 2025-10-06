@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+<<<<<<< HEAD
 export async function GET(request: NextRequest) {
+=======
+export async function GET() {
+>>>>>>> fe0724f4c2988e0aa2d605c3f059fcba2fcabd1a
   try {
     const plans = await prisma.plan.findMany({
       where: {

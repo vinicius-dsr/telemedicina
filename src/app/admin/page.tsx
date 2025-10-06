@@ -53,7 +53,9 @@ export default function AdminDashboardPage() {
       return
     }
 
-    if (session.user.role !== 'ADMIN') {
+    const userRole = (session?.user as unknown as { role?: string })?.role
+
+    if (userRole !== 'ADMIN') {
       router.push('/dashboard')
       return
     }
@@ -86,7 +88,9 @@ export default function AdminDashboardPage() {
     )
   }
 
-  if (!session || session.user.role !== 'ADMIN') {
+  const userRole = (session?.user as unknown as { role?: string })?.role
+
+  if (!session || userRole !== 'ADMIN') {
     return null
   }
 
@@ -101,7 +105,7 @@ export default function AdminDashboardPage() {
               <h1 className="text-2xl font-bold text-gray-900">Painel Administrativo</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Olá, {session.user.name}</span>
+              <span className="text-gray-700">Olá, {session?.user?.name}</span>
               <Button variant="outline" size="sm">
                 <Settings className="h-4 w-4 mr-2" />
                 Configurações
