@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 
 export async function POST(
   _request: NextRequest,
@@ -20,11 +21,11 @@ export async function POST(
       )
     }
 
-    // Em uma implementação real, você salvaria o status no banco de dados
-    // Por enquanto, vamos apenas retornar sucesso
-    return NextResponse.json({
-      message: 'Notificação marcada como lida'
-    })
+  // Marcar notificação como lida no banco
+  const id = (_params as any).id
+  await (prisma as any).notification.update({ where: { id }, data: { isRead: true } })
+
+    return NextResponse.json({ message: 'Notificação marcada como lida' })
   } catch (error) {
     console.error('Erro ao marcar notificação como lida:', error)
     return NextResponse.json(

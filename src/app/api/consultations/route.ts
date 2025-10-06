@@ -61,6 +61,21 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Criar notificação para admin sobre nova consulta
+    try {
+      const userName = (session.user as any)?.name || 'Usuário'
+      await (prisma as any).notification.create({
+        data: {
+          type: 'new_consultation',
+          title: 'Nova Consulta Agendada',
+          message: `${userName} agendou uma consulta: "${title}"`,
+          data: { consultationId: consultation.id, userId: session.user.id }
+        }
+      })
+    } catch (err) {
+      console.error('Erro ao criar notificação de nova consulta:', err)
+    }
+
     return NextResponse.json({ message: 'Consulta agendada com sucesso', consultation })
   } catch (error) {
     console.error('Erro ao criar consulta:', error)

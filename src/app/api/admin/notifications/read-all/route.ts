@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
 import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(_request: NextRequest) {
@@ -19,11 +20,10 @@ export async function POST(_request: NextRequest) {
       )
     }
 
-    // Em uma implementação real, você salvaria o status no banco de dados
-    // Por enquanto, vamos apenas retornar sucesso
-    return NextResponse.json({
-      message: 'Todas as notificações foram marcadas como lidas'
-    })
+  // Marcar todas notificações como lidas no banco
+  await (prisma as any).notification.updateMany({ where: { isRead: false }, data: { isRead: true } })
+
+  return NextResponse.json({ message: 'Todas as notificações foram marcadas como lidas' })
   } catch (error) {
     console.error('Erro ao marcar todas as notificações como lidas:', error)
     return NextResponse.json(

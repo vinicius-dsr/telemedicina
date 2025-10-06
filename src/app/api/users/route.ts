@@ -38,6 +38,20 @@ export async function POST(request: NextRequest) {
       }
     })
 
+    // Criar notificação para admin sobre novo usuário
+    try {
+      await (prisma as any).notification.create({
+        data: {
+          type: 'new_user',
+          title: 'Novo Usuário Cadastrado',
+          message: `${user.name} se cadastrou no sistema`,
+          data: { userId: user.id }
+        }
+      })
+    } catch (err) {
+      console.error('Erro ao criar notificação de novo usuário:', err)
+    }
+
     return NextResponse.json(
       { message: 'Usuário criado com sucesso', userId: user.id },
       { status: 201 }
