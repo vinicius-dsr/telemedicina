@@ -16,6 +16,7 @@ import {
   Settings,
   BarChart3
 } from 'lucide-react'
+import Link from 'next/link'
 import NotificationCenter from '@/components/notifications/NotificationCenter'
 
 interface DashboardStats {
@@ -181,10 +182,12 @@ export default function AdminDashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <Users className="h-8 w-8 text-blue-600" />
-                <Button size="sm">
-                  <BarChart3 className="h-4 w-4 mr-1" />
-                  Ver todos
-                </Button>
+                <Link href="/admin/users">
+                  <Button size="sm">
+                    <BarChart3 className="h-4 w-4 mr-1" />
+                    Gerenciar
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
