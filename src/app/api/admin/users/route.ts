@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs'
 
 export async function GET(_request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions as any)
 
     if (!session) {
       return NextResponse.json(

@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions as any)
 
     if (!session) {
       return NextResponse.json(
@@ -74,7 +74,7 @@ export async function PUT(
   { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions as any)
 
     if (!session) {
       return NextResponse.json(
@@ -162,7 +162,7 @@ export async function DELETE(
   { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions as any)
 
     if (!session) {
       return NextResponse.json(

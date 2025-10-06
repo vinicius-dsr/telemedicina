@@ -47,30 +47,30 @@ export default function EditUserPage() {
     role: 'CLIENT'
   })
 
-  const fetchUser = async () => {
-    try {
-      const response = await fetch(`/api/admin/users/${userId}`)
-      if (response.ok) {
-        const data = await response.json()
-        setUser(data.user)
-        setFormData({
-          name: data.user.name,
-          email: data.user.email,
-          role: data.user.role
-        })
-      } else {
-        toast.error('Usuário não encontrado')
-        router.push('/admin/users')
-      }
-    } catch (error) {
-      console.error('Erro ao carregar usuário:', error)
-      toast.error('Erro ao carregar usuário')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch(`/api/admin/users/${userId}`)
+        if (response.ok) {
+          const data = await response.json()
+          setUser(data.user)
+          setFormData({
+            name: data.user.name,
+            email: data.user.email,
+            role: data.user.role
+          })
+        } else {
+          toast.error('Usuário não encontrado')
+          router.push('/admin/users')
+        }
+      } catch (error) {
+        console.error('Erro ao carregar usuário:', error)
+        toast.error('Erro ao carregar usuário')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
     if (!session) {
       router.push('/auth/login')
       return

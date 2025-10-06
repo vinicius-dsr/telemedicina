@@ -5,7 +5,7 @@ import { authOptions } from '@/lib/auth'
 
 export async function POST(_request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions as any)
 
   const sessionUser = (session as Session | null)?.user
 
