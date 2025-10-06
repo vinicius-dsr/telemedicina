@@ -69,7 +69,7 @@ export default function DashboardPage() {
     }
 
     fetchUserData()
-  }, [status, router, userRole])
+  }, [status, router, userRole, session, user?.role, fetchUserData])
 
   const fetchUserData = async () => {
     try {
