@@ -11,7 +11,6 @@ import {
   Stethoscope, 
   DollarSign, 
   TrendingUp,
-  Calendar,
   FileText,
   Settings,
   BarChart3

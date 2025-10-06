@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(
   _request: NextRequest,
-  { params: _params }: { params: { id: string } | Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +22,7 @@ export async function POST(
     }
 
   // Marcar notificação como lida no banco
-  const id = (_params as any).id
+  const id = params.id
   await (prisma as any).notification.update({ where: { id }, data: { isRead: true } })
 
     return NextResponse.json({ message: 'Notificação marcada como lida' })
