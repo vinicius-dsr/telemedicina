@@ -86,7 +86,7 @@ export async function GET(_request: NextRequest) {
       message: string
       createdAt: Date
       isRead: boolean
-      data: Record<string, any>
+      data: Record<string, unknown>
     }
 
     const notifications: Notification[] = []
