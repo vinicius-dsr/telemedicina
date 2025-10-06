@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
+import type { NextAuthOptions } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
@@ -17,7 +18,7 @@ interface AuthSession {
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions as NextAuthOptions)
     
     if (!session) {
       return NextResponse.json(
@@ -64,7 +65,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions as NextAuthOptions)
     
     if (!session) {
       return NextResponse.json(
