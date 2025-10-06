@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
@@ -14,9 +14,11 @@ export async function GET(_request: NextRequest) {
       )
     }
 
+    const sessionUser = (session as any).user
+
     const consultations = await prisma.consultation.findMany({
       where: {
-        userId: session.user.id
+        userId: sessionUser.id
       },
       orderBy: {
         scheduledAt: 'desc'
@@ -58,7 +60,7 @@ export async function POST(request: NextRequest) {
     // Verificar se o usuário tem assinatura ativa
     const subscription = await prisma.subscription.findFirst({
       where: {
-        userId: session.user.id,
+        userId: sessionUser.id,
         status: 'ACTIVE'
       }
     })
@@ -73,7 +75,7 @@ export async function POST(request: NextRequest) {
     // Criar consulta
     const consultation = await prisma.consultation.create({
       data: {
-        userId: session.user.id,
+        userId: sessionUser.id,
         title,
         description,
         scheduledAt: new Date(scheduledAt),

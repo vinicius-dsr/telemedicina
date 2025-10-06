@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
@@ -14,9 +14,11 @@ export async function GET(_request: NextRequest) {
       )
     }
 
+    const sessionUser = (session as any).user
+
     const subscription = await prisma.subscription.findFirst({
       where: {
-        userId: session.user.id,
+  userId: sessionUser.id,
         status: 'ACTIVE'
       },
       include: {

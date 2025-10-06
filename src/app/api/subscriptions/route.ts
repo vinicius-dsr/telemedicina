@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
+    const sessionUser = (session as any).user
 
     const { planId } = await request.json()
 
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     // Verificar se o usuário já tem uma assinatura ativa
     const existingSubscription = await prisma.subscription.findFirst({
       where: {
-        userId: session.user.id,
+        userId: sessionUser.id,
         status: 'ACTIVE'
       }
     })
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
     // Criar assinatura
     const subscription = await prisma.subscription.create({
       data: {
-        userId: session.user.id,
+  userId: sessionUser.id,
         planId: plan.id,
         status: 'ACTIVE',
         startDate: new Date(),

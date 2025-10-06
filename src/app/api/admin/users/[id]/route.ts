@@ -1,24 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session || session.user.role !== 'ADMIN') {
+    const sessionUser = (session as any)?.user
+
+    if (!session || sessionUser?.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
       )
     }
 
+    const { id } = await params
     const user = await prisma.user.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         subscriptions: {
           include: {
@@ -60,12 +63,14 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session || session.user.role !== 'ADMIN') {
+    const sessionUser = (session as any)?.user
+
+    if (!session || sessionUser?.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
@@ -82,8 +87,9 @@ export async function PUT(
     }
 
     // Verificar se o usuário existe
+    const { id } = await params
     const existingUser = await prisma.user.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingUser) {
@@ -109,7 +115,7 @@ export async function PUT(
 
     // Atualizar usuário
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         email,
@@ -138,19 +144,21 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session || session.user.role !== 'ADMIN') {
+    const sessionUser = (session as any)?.user
+
+    if (!session || sessionUser?.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
       )
     }
 
-    const userId = params.id
+  const { id: userId } = await params
 
     // Verificar se o usuário existe
     const user = await prisma.user.findUnique({
@@ -165,7 +173,7 @@ export async function DELETE(
     }
 
     // Não permitir excluir o próprio usuário
-    if (user.id === session.user.id) {
+  if (user.id === (session as any).user.id) {
       return NextResponse.json(
         { error: 'Você não pode excluir sua própria conta' },
         { status: 400 }
