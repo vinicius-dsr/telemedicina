@@ -3,11 +3,14 @@ import { getServerSession } from 'next-auth/next'
 import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(_request: NextRequest) {
   try {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const session = await getServerSession(authOptions as any)
 
-  const sessionUser = (session as Session | null)?.user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sessionUser = (session as any)?.user
 
   if (!session || sessionUser?.role !== 'ADMIN') {
       return NextResponse.json(

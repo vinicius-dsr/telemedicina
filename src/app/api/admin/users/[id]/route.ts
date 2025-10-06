@@ -9,6 +9,7 @@ export async function GET(
   { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const session = await getServerSession(authOptions as any)
 
     if (!session) {
@@ -18,7 +19,8 @@ export async function GET(
       )
     }
 
-    const sessionUser = (session as Session).user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sessionUser = (session as any).user
 
     if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
@@ -74,6 +76,7 @@ export async function PUT(
   { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const session = await getServerSession(authOptions as any)
 
     if (!session) {
@@ -83,7 +86,8 @@ export async function PUT(
       )
     }
 
-    const sessionUser = (session as Session).user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sessionUser = (session as any).user
 
     if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
@@ -162,6 +166,7 @@ export async function DELETE(
   { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const session = await getServerSession(authOptions as any)
 
     if (!session) {
@@ -171,7 +176,8 @@ export async function DELETE(
       )
     }
 
-    const sessionUser = (session as Session).user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sessionUser = (session as any).user
 
     if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(

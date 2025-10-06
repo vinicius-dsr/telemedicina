@@ -6,7 +6,8 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET(_request: NextRequest) {
   try {
-    const session = (await getServerSession(authOptions)) as Session | null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const session = (await getServerSession(authOptions as any)) as Session | null
 
     if (!session || !session.user) {
       return NextResponse.json(
@@ -15,7 +16,8 @@ export async function GET(_request: NextRequest) {
       )
     }
 
-    const sessionUser = session.user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sessionUser = (session as any).user
 
     const consultations = await prisma.consultation.findMany({
       where: {
@@ -40,7 +42,8 @@ export async function GET(_request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = (await getServerSession(authOptions)) as Session | null
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const session = (await getServerSession(authOptions as any)) as Session | null
 
     if (!session || !session.user) {
       return NextResponse.json(
@@ -59,9 +62,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar se o usuário tem assinatura ativa
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const subscription = await prisma.subscription.findFirst({
       where: {
-        userId: session.user.id,
+        userId: (session as any).user.id,
         status: 'ACTIVE'
       }
     })
@@ -76,7 +80,8 @@ export async function POST(request: NextRequest) {
     // Criar consulta
     const consultation = await prisma.consultation.create({
       data: {
-        userId: session.user.id,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  userId: (session as any).user.id,
         title,
         description,
         scheduledAt: new Date(scheduledAt),

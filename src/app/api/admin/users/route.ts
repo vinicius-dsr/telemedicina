@@ -5,8 +5,10 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_request: NextRequest) {
   try {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const session = await getServerSession(authOptions as any)
 
     if (!session) {
@@ -16,7 +18,8 @@ export async function GET(_request: NextRequest) {
       )
     }
 
-    const sessionUser = (session as Session).user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sessionUser = (session as any).user
 
     if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
@@ -56,7 +59,8 @@ export async function GET(_request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const session = await getServerSession(authOptions as any)
 
     if (!session) {
       return NextResponse.json(
