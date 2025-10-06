@@ -49,7 +49,7 @@ export default function DashboardPage() {
       return
     }
 
-    if (session.user.role === 'ADMIN') {
+    if (session?.user?.role === 'ADMIN') {
       router.push('/admin')
       return
     }
@@ -106,7 +106,7 @@ export default function DashboardPage() {
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Olá, {session.user.name}</span>
+              <span className="text-gray-700">Olá, {session.user?.name ?? 'Usuário'}</span>
               <Button variant="outline" size="sm">
                 <Settings className="h-4 w-4 mr-2" />
                 Configurações
