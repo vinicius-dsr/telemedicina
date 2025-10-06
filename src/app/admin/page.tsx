@@ -174,7 +174,7 @@ export default function AdminDashboardPage() {
 
         {/* Quick Actions */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => router.push('/admin/users')}>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Gerenciar Usuários
@@ -183,7 +183,10 @@ export default function AdminDashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <Users className="h-8 w-8 text-blue-600" />
-                <Button size="sm">
+                <Button size="sm" onClick={(e) => {
+                  e.stopPropagation();
+                  router.push('/admin/users');
+                }}>
                   <BarChart3 className="h-4 w-4 mr-1" />
                   Ver todos
                 </Button>
