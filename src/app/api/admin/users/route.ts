@@ -4,9 +4,21 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
+type UserRole = 'ADMIN' | 'CLIENT'
+
+interface AuthSession {
+  user: {
+    id: string
+    name?: string | null
+    email?: string | null
+    role: UserRole
+  }
+}
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
+    
     if (!session) {
       return NextResponse.json(
         { error: 'Acesso negado' },
@@ -14,8 +26,9 @@ export async function GET() {
       )
     }
 
-    const sessionUser = (session as { user: { role: string } }).user
-    if (sessionUser.role !== 'ADMIN') {
+    const authSession = session as unknown as AuthSession
+    
+    if (authSession.user.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
@@ -52,6 +65,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
+    
     if (!session) {
       return NextResponse.json(
         { error: 'Acesso negado' },
@@ -59,8 +73,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const sessionUser = (session as { user: { role: string } }).user
-    if (sessionUser.role !== 'ADMIN') {
+    const authSession = session as unknown as AuthSession
+
+    if (authSession.user.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
@@ -94,7 +109,7 @@ export async function POST(request: NextRequest) {
         name,
         email,
         password: hashedPassword,
-        role: role as 'ADMIN' | 'CLIENT'
+        role: role as UserRole
       }
     })
 
