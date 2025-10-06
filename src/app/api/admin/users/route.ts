@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth/next'
-import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const session = await getServerSession(authOptions as any)
+    const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json(
         { error: 'Acesso negado' },
@@ -17,8 +14,7 @@ export async function GET(_request: NextRequest) {
       )
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sessionUser = (session as any).user
+    const sessionUser = (session as { user: { role: string } }).user
     if (sessionUser.role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Acesso negado' },
@@ -55,8 +51,7 @@ export async function GET(_request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const session = await getServerSession(authOptions as any)
+    const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json(
         { error: 'Acesso negado' },
@@ -81,7 +76,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o usuário já existe
     const existingUser = await prisma.user.findUnique({
       where: { email }
     })
@@ -93,10 +87,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Hash da senha
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Criar usuário
     const user = await prisma.user.create({
       data: {
         name,
