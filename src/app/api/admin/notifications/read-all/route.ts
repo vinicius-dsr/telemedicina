@@ -7,7 +7,7 @@ import { authOptions } from '@/lib/auth'
 export async function POST(_request: NextRequest) {
   try {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions) as Session | null
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sessionUser = (session as any)?.user

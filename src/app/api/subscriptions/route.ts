@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma'
 export async function POST(request: NextRequest) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions) as Session | null
 
     if (!session) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
