@@ -55,22 +55,6 @@ export default function DashboardPage() {
   const [consultations, setConsultations] = useState<Consultation[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    if (status === 'loading') return
-
-    if (!session) {
-      return
-    }
-    const userRole = user?.role
-
-    if (userRole === 'ADMIN') {
-      router.push('/admin')
-      return
-    }
-
-    fetchUserData()
-  }, [status, router, userRole, session, user?.role, fetchUserData])
-
   const fetchUserData = async () => {
     try {
       const [subscriptionRes, consultationsRes] = await Promise.all([
@@ -93,6 +77,22 @@ export default function DashboardPage() {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (status === 'loading') return
+
+    if (!session) {
+      return
+    }
+    const userRole = user?.role
+
+    if (userRole === 'ADMIN') {
+      router.push('/admin')
+      return
+    }
+
+    fetchUserData()
+  }, [status, router, userRole, session, user?.role, fetchUserData])
 
   if (status === 'loading' || isLoading) {
     return (
