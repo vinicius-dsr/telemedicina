@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { planId, paymentMethod } = await request.json()
+    const { planId } = await request.json()
 
     if (!planId) {
       return NextResponse.json(

@@ -11,11 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge'
 import { 
   User, 
-  Mail, 
   Shield, 
-  Save, 
   ArrowLeft,
-  Calendar,
   Trash2
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -50,20 +47,6 @@ export default function EditUserPage() {
     role: 'CLIENT'
   })
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/auth/login')
-      return
-    }
-
-    if (session.user.role !== 'ADMIN') {
-      router.push('/dashboard')
-      return
-    }
-
-    fetchUser()
-  }, [session, router, userId])
-
   const fetchUser = async () => {
     try {
       const response = await fetch(`/api/admin/users/${userId}`)
@@ -86,6 +69,20 @@ export default function EditUserPage() {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (!session) {
+      router.push('/auth/login')
+      return
+    }
+
+    if (session.user.role !== 'ADMIN') {
+      router.push('/dashboard')
+      return
+    }
+
+    fetchUser()
+  }, [session, router, userId])
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()

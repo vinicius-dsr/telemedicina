@@ -6,11 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { 
   Bell, 
-  Calendar, 
   User, 
   Stethoscope, 
   AlertCircle,
-  CheckCircle,
   Clock
 } from 'lucide-react'
 
@@ -21,7 +19,7 @@ interface Notification {
   message: string
   createdAt: string
   isRead: boolean
-  data?: any
+  data?: Record<string, unknown>
 }
 
 export default function NotificationCenter() {

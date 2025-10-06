@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -19,8 +19,7 @@ import {
   Shield,
   User,
   Mail,
-  Calendar,
-  MoreHorizontal
+  Calendar
 } from 'lucide-react'
 import Link from 'next/link'
 import { toast } from 'sonner'

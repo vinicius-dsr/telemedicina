@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { title, description, scheduledAt, duration, urgency } = await request.json()
+    const { title, description, scheduledAt, duration } = await request.json()
 
     if (!title || !description || !scheduledAt || !duration) {
       return NextResponse.json(

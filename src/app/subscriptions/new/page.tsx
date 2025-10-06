@@ -30,19 +30,6 @@ export default function NewSubscriptionPage() {
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState('credit_card')
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/auth/login')
-      return
-    }
-
-    if (planId) {
-      fetchPlan()
-    } else {
-      router.push('/plans')
-    }
-  }, [session, planId, router])
-
   const fetchPlan = async () => {
     try {
       const response = await fetch(`/api/plans/${planId}`)
@@ -59,6 +46,19 @@ export default function NewSubscriptionPage() {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (!session) {
+      router.push('/auth/login')
+      return
+    }
+
+    if (planId) {
+      fetchPlan()
+    } else {
+      router.push('/plans')
+    }
+  }, [session, planId, router])
 
   const handleSubscribe = async () => {
     if (!plan) return
