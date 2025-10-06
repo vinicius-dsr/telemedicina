@@ -6,8 +6,6 @@ import bcrypt from 'bcryptjs'
 
 type UserRole = 'ADMIN' | 'CLIENT'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
@@ -44,8 +42,13 @@ export async function GET() {
     })
 
     return NextResponse.json({ users })
-  } catch (error) {
-    console.error('Erro ao buscar usuários:', error)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Erro ao buscar usuários:', error.message)
+    } else {
+      console.error('Erro desconhecido ao buscar usuários')
+    }
+
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -113,8 +116,13 @@ export async function POST(request: NextRequest) {
         createdAt: user.createdAt
       }
     })
-  } catch (error) {
-    console.error('Erro ao criar usuário:', error)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error('Erro ao criar usuário:', error.message)
+    } else {
+      console.error('Erro desconhecido ao criar usuário')
+    }
+
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
