@@ -25,7 +25,7 @@ export default function AdminPlansPage() {
 
   useEffect(() => {
     if (status === 'loading') return
-    const role = (session?.user as any)?.role
+    const role = session?.user?.role
     if (!session) { router.push('/auth/login'); return }
     if (role !== 'ADMIN') { router.push('/dashboard'); return }
     fetchPlans()

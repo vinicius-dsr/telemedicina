@@ -11,7 +11,7 @@ export async function GET() {
     }
 
     const records = await prisma.medicalRecord.findMany({
-      where: { userId: (session.user as any).id },
+      where: { userId: session.user.id },
       orderBy: { createdAt: 'desc' }
     })
 

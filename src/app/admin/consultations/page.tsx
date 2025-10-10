@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Stethoscope, User, Calendar, Clock, Filter, AlertCircle } from 'lucide-react'
+import { Stethoscope, User, Calendar, Clock, Filter } from 'lucide-react'
 
 interface Doctor {
   id: string
@@ -45,7 +45,7 @@ export default function AdminConsultationsPage() {
 
   useEffect(() => {
     if (status === 'loading') return
-    const role = (session?.user as any)?.role
+    const role = session?.user?.role
     if (!session) { router.push('/auth/login'); return }
     if (role !== 'ADMIN') { router.push('/dashboard'); return }
     
