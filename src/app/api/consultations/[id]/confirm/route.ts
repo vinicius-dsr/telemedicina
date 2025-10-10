@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
+import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
@@ -9,7 +10,7 @@ export async function POST(
   { params }: { params: { id: string } | Promise<{ id: string }> }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = (await getServerSession(authOptions)) as Session | null
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -18,7 +19,7 @@ export async function POST(
       )
     }
 
-    const userRole = (session.user as { role?: string })?.role
+    const userRole = session.user.role
     
     if (userRole !== 'DOCTOR') {
       return NextResponse.json(

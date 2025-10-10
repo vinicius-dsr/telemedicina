@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from 'next-auth/next'
+import type { Session } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 // GET - Buscar todas as consultas (Admin)
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions)
+    const session = (await getServerSession(authOptions)) as Session | null
     
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -15,7 +16,7 @@ export async function GET() {
       )
     }
 
-    const userRole = (session.user as { role?: string })?.role
+    const userRole = session.user.role
     
     if (userRole !== 'ADMIN') {
       return NextResponse.json(
