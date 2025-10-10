@@ -17,7 +17,6 @@ import {
   ArrowLeft,
   Stethoscope,
   User,
-  FileText,
   CheckCircle
 } from 'lucide-react'
 import { format, startOfToday } from 'date-fns'

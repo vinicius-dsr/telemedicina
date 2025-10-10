@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     const sessionUser = session.user
-    const { planId, paymentMethod } = await request.json()
+    const { planId } = await request.json()
 
     if (!planId) {
       return NextResponse.json({ error: 'ID do plano é obrigatório' }, { status: 400 })

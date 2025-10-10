@@ -101,7 +101,7 @@ export default function PlansPage() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {plans.map((plan, index) => (
+          {plans.map((plan) => (
             <Card 
               key={plan.id} 
               className={`relative ${
