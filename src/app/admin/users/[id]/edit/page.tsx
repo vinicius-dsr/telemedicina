@@ -47,6 +47,9 @@ export default function EditUserPage() {
     role: 'CLIENT'
   })
 
+  type UserWithRole = { name?: string; role?: string }
+  const sessionUser = session?.user as UserWithRole | undefined
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -75,7 +78,7 @@ export default function EditUserPage() {
       router.push('/auth/login')
       return
     }
-    const userRole = (session?.user as unknown as { role?: string })?.role
+    const userRole = sessionUser?.role
 
     if (userRole !== 'ADMIN') {
       router.push('/dashboard')
@@ -83,7 +86,7 @@ export default function EditUserPage() {
     }
 
     fetchUser()
-  }, [session, router, userId])
+  }, [session, router, userId, sessionUser?.role])
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()

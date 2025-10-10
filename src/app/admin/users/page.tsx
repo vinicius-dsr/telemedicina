@@ -54,13 +54,16 @@ export default function UsersPage() {
     role: 'CLIENT'
   })
 
+  type UserWithRole = { name?: string; role?: string }
+  const user = session?.user as UserWithRole | undefined
+
   useEffect(() => {
     if (!session) {
       router.push('/auth/login')
       return
     }
 
-    const userRole = (session?.user as unknown as { role?: string })?.role
+    const userRole = user?.role
 
     if (userRole !== 'ADMIN') {
       router.push('/dashboard')
@@ -68,7 +71,7 @@ export default function UsersPage() {
     }
 
     fetchUsers()
-  }, [session, router])
+  }, [session, router, user?.role])
 
   const fetchUsers = async () => {
     try {

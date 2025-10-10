@@ -98,7 +98,6 @@ export default function DashboardPage() {
     }
 
     fetchUserData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, router, userRole, session, user?.role])
 
   if (status === 'loading' || isLoading) {

@@ -43,14 +43,17 @@ export default function AdminConsultationsPage() {
   const [selectedStatus, setSelectedStatus] = useState<string>('all')
   const [isLoading, setIsLoading] = useState(true)
 
+  type UserWithRole = { name?: string; role?: string }
+  const user = session?.user as UserWithRole | undefined
+
   useEffect(() => {
     if (status === 'loading') return
-    const role = session?.user?.role
+    const role = user?.role
     if (!session) { router.push('/auth/login'); return }
     if (role !== 'ADMIN') { router.push('/dashboard'); return }
     
     fetchData()
-  }, [session, status, router])
+  }, [session, status, router, user?.role])
 
   const fetchData = async () => {
     try {

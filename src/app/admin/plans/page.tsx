@@ -23,13 +23,16 @@ export default function AdminPlansPage() {
   const router = useRouter()
   const [plans, setPlans] = useState<Plan[]>([])
 
+  type UserWithRole = { name?: string; role?: string }
+  const user = session?.user as UserWithRole | undefined
+
   useEffect(() => {
     if (status === 'loading') return
-    const role = session?.user?.role
+    const role = user?.role
     if (!session) { router.push('/auth/login'); return }
     if (role !== 'ADMIN') { router.push('/dashboard'); return }
     fetchPlans()
-  }, [session, status, router])
+  }, [session, status, router, user?.role])
 
   const fetchPlans = async () => {
     const res = await fetch('/api/plans')

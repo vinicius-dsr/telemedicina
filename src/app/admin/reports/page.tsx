@@ -11,12 +11,15 @@ export default function AdminReportsPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
+  type UserWithRole = { name?: string; role?: string }
+  const user = session?.user as UserWithRole | undefined
+
   useEffect(() => {
     if (status === 'loading') return
-    const role = session?.user?.role
+    const role = user?.role
     if (!session) { router.push('/auth/login'); return }
     if (role !== 'ADMIN') { router.push('/dashboard'); return }
-  }, [session, status, router])
+  }, [session, status, router, user?.role])
 
   return (
     <div className="min-h-screen bg-gray-50">

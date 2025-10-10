@@ -45,6 +45,9 @@ export default function AdminDashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  type UserWithRole = { name?: string; role?: string }
+  const user = session?.user as UserWithRole | undefined
+
   useEffect(() => {
     if (status === 'loading') return
 
@@ -53,7 +56,7 @@ export default function AdminDashboardPage() {
       return
     }
 
-    const userRole = (session?.user as unknown as { role?: string })?.role
+    const userRole = user?.role
 
     if (userRole !== 'ADMIN') {
       router.push('/dashboard')
@@ -61,7 +64,7 @@ export default function AdminDashboardPage() {
     }
 
     fetchDashboardData()
-  }, [session, status, router])
+  }, [session, status, router, user?.role])
 
   const fetchDashboardData = async () => {
     try {
