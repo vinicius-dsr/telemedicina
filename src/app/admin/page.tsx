@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,7 +13,8 @@ import {
   TrendingUp,
   FileText,
   Settings,
-  BarChart3
+  BarChart3,
+  LogOut
 } from 'lucide-react'
 
 interface DashboardStats {
@@ -105,9 +106,13 @@ export default function AdminDashboardPage() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-gray-700">Olá, {session?.user?.name}</span>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={() => router.push('/settings')}>
                 <Settings className="h-4 w-4 mr-2" />
                 Configurações
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => signOut({ callbackUrl: '/auth/login' })}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Sair
               </Button>
             </div>
           </div>
@@ -194,7 +199,7 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Planos e Preços
@@ -203,14 +208,14 @@ export default function AdminDashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <DollarSign className="h-8 w-8 text-green-600" />
-                <Button size="sm" variant="outline">
-                  Gerenciar
-                </Button>
+                <a href="/admin/plans">
+                  <Button size="sm" variant="outline">Gerenciar</Button>
+                </a>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Consultas
@@ -219,14 +224,14 @@ export default function AdminDashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <Stethoscope className="h-8 w-8 text-purple-600" />
-                <Button size="sm" variant="outline">
-                  Ver todas
-                </Button>
+                <a href="/admin/consultations">
+                  <Button size="sm" variant="outline">Ver todas</Button>
+                </a>
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
                 Relatórios
@@ -235,9 +240,9 @@ export default function AdminDashboardPage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <FileText className="h-8 w-8 text-orange-600" />
-                <Button size="sm" variant="outline">
-                  Gerar
-                </Button>
+                <a href="/admin/reports">
+                  <Button size="sm" variant="outline">Gerar</Button>
+                </a>
               </div>
             </CardContent>
           </Card>

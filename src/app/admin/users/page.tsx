@@ -298,6 +298,7 @@ export default function UsersPage() {
                     <SelectContent>
                       <SelectItem value="CLIENT">Cliente</SelectItem>
                       <SelectItem value="ADMIN">Administrador</SelectItem>
+                      <SelectItem value="DOCTOR">Médico</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

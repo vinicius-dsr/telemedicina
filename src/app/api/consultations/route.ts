@@ -12,9 +12,39 @@ export async function GET() {
     }
 
     const sessionUser = session.user
+    const userRole = (sessionUser as { role?: string })?.role
 
+    // Se for médico, retorna consultas onde ele é o médico
+    if (userRole === 'DOCTOR') {
+      const consultations = await prisma.consultation.findMany({
+        where: { doctorId: sessionUser.id },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true
+            }
+          }
+        },
+        orderBy: { scheduledAt: 'desc' }
+      })
+
+      return NextResponse.json({ consultations })
+    }
+
+    // Se for paciente, retorna consultas onde ele é o paciente
     const consultations = await prisma.consultation.findMany({
       where: { userId: sessionUser.id },
+      include: {
+        doctor: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
+      },
       orderBy: { scheduledAt: 'desc' }
     })
 
@@ -32,10 +62,119 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
-    const { title, description, scheduledAt, duration } = await request.json()
+    const { title, description, doctorId, scheduledAt, duration } = await request.json()
 
-    if (!title || !description || !scheduledAt || !duration) {
-      return NextResponse.json({ error: 'Todos os campos são obrigatórios' }, { status: 400 })
+    if (!title || !description || !doctorId || !scheduledAt) {
+      return NextResponse.json({ error: 'Campos obrigatórios: title, description, doctorId, scheduledAt' }, { status: 400 })
+    }
+
+    // Verificar se o médico existe
+    const doctor = await prisma.user.findFirst({
+      where: {
+        id: doctorId,
+        role: 'DOCTOR'
+      }
+    })
+
+    if (!doctor) {
+      return NextResponse.json({ error: 'Médico não encontrado' }, { status: 404 })
+    }
+
+    // Verificar se a data não é no passado
+    const scheduledDate = new Date(scheduledAt)
+    if (scheduledDate < new Date()) {
+      return NextResponse.json({ error: 'Não é possível agendar consultas no passado' }, { status: 400 })
+    }
+
+    // Verificar conflitos de horário para o médico com verificação precisa
+    const consultationDuration = duration || 30
+    const conflictingConsultations = await prisma.consultation.findMany({
+      where: {
+        doctorId: doctorId,
+        status: {
+          in: ['SCHEDULED', 'IN_PROGRESS']
+        },
+        scheduledAt: {
+          gte: new Date(scheduledDate.getTime() - 60 * 60 * 1000), // 1 hora antes
+          lte: new Date(scheduledDate.getTime() + consultationDuration * 60 * 1000 + 60 * 60 * 1000) // duração + 1 hora depois
+        }
+      },
+      select: {
+        scheduledAt: true,
+        duration: true
+      }
+    })
+
+    // Verificar se há conflito real considerando a duração exata
+    const hasConflict = conflictingConsultations.some((consultation) => {
+      const consultationStart = new Date(consultation.scheduledAt).getTime()
+      const consultationEnd = consultationStart + (consultation.duration * 60 * 1000)
+      const requestedStart = scheduledDate.getTime()
+      const requestedEnd = requestedStart + (consultationDuration * 60 * 1000)
+
+      // Verifica se há sobreposição de horários
+      return (
+        (requestedStart >= consultationStart && requestedStart < consultationEnd) ||
+        (requestedEnd > consultationStart && requestedEnd <= consultationEnd) ||
+        (requestedStart <= consultationStart && requestedEnd >= consultationEnd)
+      )
+    })
+
+    if (hasConflict) {
+      // Buscar médicos alternativos disponíveis
+      const allDoctors = await prisma.user.findMany({
+        where: {
+          role: 'DOCTOR',
+          id: { not: doctorId }
+        },
+        select: {
+          id: true,
+          name: true
+        }
+      })
+
+      const availableAlternatives = []
+      for (const altDoctor of allDoctors) {
+        const altConflicts = await prisma.consultation.findMany({
+          where: {
+            doctorId: altDoctor.id,
+            status: { in: ['SCHEDULED', 'IN_PROGRESS'] },
+            scheduledAt: {
+              gte: new Date(scheduledDate.getTime() - 60 * 60 * 1000),
+              lte: new Date(scheduledDate.getTime() + consultationDuration * 60 * 1000 + 60 * 60 * 1000)
+            }
+          },
+          select: { scheduledAt: true, duration: true }
+        })
+
+        const altHasConflict = altConflicts.some((c) => {
+          const cStart = new Date(c.scheduledAt).getTime()
+          const cEnd = cStart + (c.duration * 60 * 1000)
+          const rStart = scheduledDate.getTime()
+          const rEnd = rStart + (consultationDuration * 60 * 1000)
+          return (
+            (rStart >= cStart && rStart < cEnd) ||
+            (rEnd > cStart && rEnd <= cEnd) ||
+            (rStart <= cStart && rEnd >= cEnd)
+          )
+        })
+
+        if (!altHasConflict) {
+          availableAlternatives.push(altDoctor)
+        }
+      }
+
+      if (availableAlternatives.length > 0) {
+        return NextResponse.json({ 
+          error: `O Dr(a). ${doctor.name} não está disponível neste horário.`,
+          availableAlternatives: availableAlternatives,
+          message: `Temos ${availableAlternatives.length} médico(s) disponível(is) neste horário. Gostaria de agendar com um deles?`
+        }, { status: 409 })
+      } else {
+        return NextResponse.json({ 
+          error: 'Nenhum médico disponível neste horário. Por favor, escolha outro horário.' 
+        }, { status: 409 })
+      }
     }
 
     // Verificar se o usuário tem assinatura ativa
@@ -47,15 +186,25 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Você precisa de uma assinatura ativa para agendar consultas' }, { status: 400 })
     }
 
-    // Criar consulta
+    // Criar consulta com status PENDING_CONFIRMATION
     const consultation = await prisma.consultation.create({
       data: {
         userId: session.user.id,
+        doctorId,
         title,
         description,
-        scheduledAt: new Date(scheduledAt),
-        duration: parseInt(String(duration), 10),
-        status: 'SCHEDULED'
+        scheduledAt: scheduledDate,
+        duration: consultationDuration,
+        status: 'PENDING_CONFIRMATION'
+      },
+      include: {
+        doctor: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        }
       }
     })
 
@@ -66,8 +215,8 @@ export async function POST(request: NextRequest) {
         data: {
           type: 'new_consultation',
           title: 'Nova Consulta Agendada',
-          message: `${userName} agendou uma consulta: "${title}"`,
-          data: { consultationId: consultation.id, userId: session.user.id }
+          message: `${userName} agendou uma consulta com ${doctor.name}: "${title}"`,
+          data: { consultationId: consultation.id, userId: session.user.id, doctorId }
         }
       })
     } catch (err) {

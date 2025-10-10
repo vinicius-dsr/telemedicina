@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -13,7 +13,8 @@ import {
   Clock,
   Plus,
   User,
-  Settings
+  Settings,
+  LogOut
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -91,6 +92,11 @@ export default function DashboardPage() {
       return
     }
 
+    if (userRole === 'DOCTOR') {
+      router.push('/doctor')
+      return
+    }
+
     fetchUserData()
   }, [status, router, userRole, session, user?.role, fetchUserData])
 
@@ -114,16 +120,19 @@ export default function DashboardPage() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <span className="text-gray-700">Olá, {user?.name ?? 'Usuário'}</span>
-              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+              <span className="text-sm sm:text-base text-gray-700">Olá, {user?.name ?? 'Usuário'}</span>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Olá, {session.user?.name ?? 'Usuário'}</span>
-              <Button variant="outline" size="sm">
-                <Settings className="h-4 w-4 mr-2" />
-                Configurações
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Button variant="outline" size="sm" onClick={() => router.push('/settings')} className="flex-1 sm:flex-none">
+                <Settings className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Configurações</span>
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => signOut({ callbackUrl: '/auth/login' })} className="flex-1 sm:flex-none">
+                <LogOut className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Sair</span>
               </Button>
             </div>
           </div>
@@ -176,19 +185,19 @@ export default function DashboardPage() {
         )}
 
         {/* Quick Actions */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                 Agendar Consulta
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <Calendar className="h-8 w-8 text-blue-600" />
-                <Link href="/consultations/new">
-                  <Button size="sm">
-                    <Plus className="h-4 w-4 mr-1" />
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+                <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+                <Link href="/consultations/new" className="w-full sm:w-auto">
+                  <Button size="sm" className="w-full sm:w-auto text-xs">
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                     Nova
                   </Button>
                 </Link>
@@ -198,15 +207,15 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                 Minhas Consultas
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <Stethoscope className="h-8 w-8 text-green-600" />
-                <Link href="/consultations">
-                  <Button size="sm" variant="outline">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+                <Stethoscope className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+                <Link href="/consultations" className="w-full sm:w-auto">
+                  <Button size="sm" variant="outline" className="w-full sm:w-auto text-xs">
                     Ver todas
                   </Button>
                 </Link>
@@ -216,15 +225,15 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                 Prontuário
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <FileText className="h-8 w-8 text-purple-600" />
-                <Link href="/medical-records">
-                  <Button size="sm" variant="outline">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+                <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
+                <Link href="/medical-records" className="w-full sm:w-auto">
+                  <Button size="sm" variant="outline" className="w-full sm:w-auto text-xs">
                     Acessar
                   </Button>
                 </Link>
@@ -234,15 +243,15 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
                 Histórico
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <Clock className="h-8 w-8 text-orange-600" />
-                <Link href="/history">
-                  <Button size="sm" variant="outline">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
+                <Link href="/history" className="w-full sm:w-auto">
+                  <Button size="sm" variant="outline" className="w-full sm:w-auto text-xs">
                     Ver histórico
                   </Button>
                 </Link>
@@ -263,10 +272,10 @@ export default function DashboardPage() {
             {consultations.length > 0 ? (
               <div className="space-y-4">
                 {consultations.slice(0, 3).map((consultation) => (
-                  <div key={consultation.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <h4 className="font-medium">{consultation.title}</h4>
-                      <p className="text-sm text-gray-600">
+                  <div key={consultation.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-2">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-sm sm:text-base">{consultation.title}</h4>
+                      <p className="text-xs sm:text-sm text-gray-600">
                         {new Date(consultation.scheduledAt).toLocaleDateString('pt-BR')}
                       </p>
                     </div>
@@ -276,6 +285,7 @@ export default function DashboardPage() {
                         consultation.status === 'SCHEDULED' ? 'secondary' :
                         'destructive'
                       }
+                      className="text-xs"
                     >
                       {consultation.status === 'COMPLETED' ? 'Concluída' :
                        consultation.status === 'SCHEDULED' ? 'Agendada' :

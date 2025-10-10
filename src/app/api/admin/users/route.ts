@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
-type UserRole = 'ADMIN' | 'CLIENT'
+type UserRole = 'ADMIN' | 'CLIENT' | 'DOCTOR'
 
 export async function GET() {
   try {
@@ -91,6 +91,15 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       return NextResponse.json(
         { error: 'Usuário já existe com este email' },
+        { status: 400 }
+      )
+    }
+
+    // Validate role
+    const allowedRoles: UserRole[] = ['ADMIN', 'CLIENT', 'DOCTOR']
+    if (!allowedRoles.includes(role as UserRole)) {
+      return NextResponse.json(
+        { error: 'Papel de usuário inválido' },
         { status: 400 }
       )
     }

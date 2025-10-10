@@ -7,8 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { CheckCircle, CreditCard, Shield } from 'lucide-react'
+import { CheckCircle, CreditCard, Shield, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 interface Plan {
   id: string
@@ -29,6 +30,7 @@ export default function SubscriptionNewClient() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [paymentMethod, setPaymentMethod] = useState('credit_card')
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false)
 
   useEffect(() => {
     if (!session) {
@@ -37,24 +39,40 @@ export default function SubscriptionNewClient() {
     }
 
     if (planId) {
-      const fetchPlan = async () => {
+      const fetchData = async () => {
         try {
-          const response = await fetch(`/api/plans/${planId}`)
-          if (response.ok) {
-            const data = await response.json()
-            setPlan(data.plan)
+          // Buscar plano e verificar assinatura em paralelo
+          const [planResponse, subscriptionResponse] = await Promise.all([
+            fetch(`/api/plans/${planId}`),
+            fetch('/api/subscriptions/current')
+          ])
+
+          if (planResponse.ok) {
+            const planData = await planResponse.json()
+            setPlan(planData.plan)
           } else {
+            toast.error('Plano não encontrado')
             router.push('/plans')
+            return
+          }
+
+          if (subscriptionResponse.ok) {
+            const subData = await subscriptionResponse.json()
+            if (subData.subscription?.status === 'ACTIVE') {
+              setHasActiveSubscription(true)
+              toast.warning('Você já possui uma assinatura ativa')
+            }
           }
         } catch (error) {
-          console.error('Erro ao carregar plano:', error)
+          console.error('Erro ao carregar dados:', error)
+          toast.error('Erro ao carregar informações')
           router.push('/plans')
         } finally {
           setIsLoading(false)
         }
       }
 
-      fetchPlan()
+      fetchData()
     } else {
       router.push('/plans')
     }
@@ -62,6 +80,11 @@ export default function SubscriptionNewClient() {
 
   const handleSubscribe = async () => {
     if (!plan) return
+
+    if (hasActiveSubscription) {
+      toast.error('Você já possui uma assinatura ativa. Cancele-a antes de assinar um novo plano.')
+      return
+    }
 
     setIsSubscribing(true)
 
@@ -77,15 +100,19 @@ export default function SubscriptionNewClient() {
         })
       })
 
+      const data = await response.json()
+
       if (response.ok) {
-        router.push('/dashboard?message=Assinatura criada com sucesso!')
+        toast.success('Assinatura criada com sucesso! 🎉')
+        setTimeout(() => {
+          router.push('/dashboard')
+        }, 1500)
       } else {
-        const data = await response.json()
-        alert(data.error || 'Erro ao criar assinatura')
+        toast.error(data.error || 'Erro ao criar assinatura')
       }
     } catch (error) {
       console.error('Erro ao criar assinatura:', error)
-      alert('Erro ao criar assinatura')
+      toast.error('Erro ao processar assinatura. Tente novamente.')
     } finally {
       setIsSubscribing(false)
     }
@@ -132,6 +159,29 @@ export default function SubscriptionNewClient() {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Aviso de assinatura ativa */}
+        {hasActiveSubscription && (
+          <Card className="mb-6 border-orange-300 bg-orange-50">
+            <CardHeader>
+              <CardTitle className="flex items-center text-orange-900">
+                <AlertCircle className="h-5 w-5 mr-2" />
+                Assinatura Ativa Detectada
+              </CardTitle>
+              <CardDescription className="text-orange-700">
+                Você já possui uma assinatura ativa. Para assinar um novo plano, primeiro cancele sua assinatura atual.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={() => router.push('/dashboard')}
+                className="bg-orange-600 hover:bg-orange-700"
+              >
+                Ir para Dashboard
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Plan Summary */}
           <Card>
@@ -280,11 +330,20 @@ export default function SubscriptionNewClient() {
                 {/* Subscribe Button */}
                 <Button 
                   onClick={handleSubscribe}
-                  disabled={isSubscribing}
+                  disabled={isSubscribing || hasActiveSubscription}
                   className="w-full"
                   size="lg"
                 >
-                  {isSubscribing ? 'Processando...' : `Assinar por R$ ${plan.price.toFixed(2)}/mês`}
+                  {isSubscribing ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Processando...
+                    </>
+                  ) : hasActiveSubscription ? (
+                    'Você já possui uma assinatura'
+                  ) : (
+                    `Assinar por R$ ${plan.price.toFixed(2)}/mês`
+                  )}
                 </Button>
 
                 <p className="text-xs text-gray-500 text-center">
