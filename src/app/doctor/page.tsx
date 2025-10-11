@@ -181,15 +181,15 @@ export default function DoctorDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Alerta de Consultas Pendentes */}
         {pendingCount > 0 && (
-          <Card className="mb-6 border-yellow-300 bg-yellow-50">
-            <CardHeader>
-              <CardTitle className="flex items-center text-yellow-900">
-                <AlertCircle className="h-5 w-5 mr-2" />
-                {pendingCount} Consulta{pendingCount > 1 ? 's' : ''} Aguardando Confirmação
+          <Card className="mb-4 sm:mb-6 border-yellow-300 bg-yellow-50">
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="flex items-center text-yellow-900 text-sm sm:text-base">
+                <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-2 flex-shrink-0" />
+                <span>{pendingCount} Consulta{pendingCount > 1 ? 's' : ''} Aguardando Confirmação</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-yellow-800 text-sm">
+              <p className="text-yellow-800 text-xs sm:text-sm">
                 Você tem consultas pendentes que precisam ser confirmadas ou rejeitadas. 
                 Verifique a lista abaixo e tome uma ação.
               </p>
@@ -276,18 +276,24 @@ export default function DoctorDashboardPage() {
             <CardContent>
               <div className="space-y-4">
                 {todayConsultations.map((consultation) => (
-                  <div key={consultation.id} className="bg-white p-4 rounded-lg border border-blue-200">
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <User className="h-4 w-4 text-gray-500" />
-                          <h4 className="font-semibold text-gray-900">{consultation.user.name}</h4>
+                  <div key={consultation.id} className="bg-white p-3 sm:p-4 rounded-lg border border-blue-200">
+                    <div className="flex flex-col gap-3">
+                      {/* Header */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                          <h4 className="font-semibold text-sm sm:text-base text-gray-900">{consultation.user.name}</h4>
                         </div>
-                        <h3 className="font-medium text-lg mb-1">{consultation.title}</h3>
-                        <p className="text-sm text-gray-600 mb-2">{consultation.description}</p>
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                        {getStatusBadge(consultation.status)}
+                      </div>
+                      
+                      {/* Content */}
+                      <div>
+                        <h3 className="font-medium text-base sm:text-lg mb-1">{consultation.title}</h3>
+                        <p className="text-xs sm:text-sm text-gray-600 mb-2">{consultation.description}</p>
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500">
                           <span className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
+                            <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                             {new Date(consultation.scheduledAt).toLocaleTimeString('pt-BR', { 
                               hour: '2-digit', 
                               minute: '2-digit' 
@@ -296,31 +302,30 @@ export default function DoctorDashboardPage() {
                           <span>{consultation.duration} minutos</span>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2 items-end">
-                        {getStatusBadge(consultation.status)}
-                        {consultation.status === 'PENDING_CONFIRMATION' && (
-                          <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full sm:w-auto">
-                            <Button
-                              size="sm"
-                              variant="default"
-                              className="bg-green-600 hover:bg-green-700 text-xs w-full sm:w-auto"
-                              onClick={() => handleConfirmConsultation(consultation.id)}
-                            >
-                              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                              Confirmar
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              className="text-xs w-full sm:w-auto"
-                              onClick={() => handleRejectConsultation(consultation.id)}
-                            >
-                              <XCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                              Rejeitar
-                            </Button>
-                          </div>
-                        )}
-                      </div>
+                      
+                      {/* Actions */}
+                      {consultation.status === 'PENDING_CONFIRMATION' && (
+                        <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
+                          <Button
+                            size="sm"
+                            variant="default"
+                            className="bg-green-600 hover:bg-green-700 text-xs w-full sm:flex-1"
+                            onClick={() => handleConfirmConsultation(consultation.id)}
+                          >
+                            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                            Confirmar
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="text-xs w-full sm:flex-1"
+                            onClick={() => handleRejectConsultation(consultation.id)}
+                          >
+                            <XCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                            Rejeitar
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -341,22 +346,30 @@ export default function DoctorDashboardPage() {
             {consultations.length > 0 ? (
               <div className="space-y-4">
                 {consultations.map((consultation) => (
-                  <div key={consultation.id} className="flex items-start justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <User className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm font-medium text-gray-700">{consultation.user.name}</span>
-                        <span className="text-sm text-gray-500">({consultation.user.email})</span>
+                  <div key={consultation.id} className="flex flex-col gap-3 p-3 sm:p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                    {/* Header with user info and status */}
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <User className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 min-w-0 flex-1">
+                          <span className="text-sm font-medium text-gray-700 truncate">{consultation.user.name}</span>
+                          <span className="text-xs sm:text-sm text-gray-500 truncate">({consultation.user.email})</span>
+                        </div>
                       </div>
-                      <h4 className="font-medium mb-1">{consultation.title}</h4>
-                      <p className="text-sm text-gray-600 mb-2">{consultation.description}</p>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                      {getStatusBadge(consultation.status)}
+                    </div>
+                    
+                    {/* Consultation details */}
+                    <div>
+                      <h4 className="font-medium text-sm sm:text-base mb-1">{consultation.title}</h4>
+                      <p className="text-xs sm:text-sm text-gray-600 mb-2">{consultation.description}</p>
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500">
                         <span className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                           {new Date(consultation.scheduledAt).toLocaleDateString('pt-BR')}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
+                          <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                           {new Date(consultation.scheduledAt).toLocaleTimeString('pt-BR', { 
                             hour: '2-digit', 
                             minute: '2-digit' 
@@ -365,39 +378,38 @@ export default function DoctorDashboardPage() {
                         <span>{consultation.duration} min</span>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2 items-end ml-4">
-                      {getStatusBadge(consultation.status)}
-                      {consultation.status === 'PENDING_CONFIRMATION' && (
-                        <div className="flex flex-col sm:flex-row gap-2 mt-2 w-full sm:w-auto">
-                          <Button
-                            size="sm"
-                            variant="default"
-                            className="bg-green-600 hover:bg-green-700 text-xs w-full sm:w-auto"
-                            onClick={() => handleConfirmConsultation(consultation.id)}
-                          >
-                            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                            Confirmar
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            className="text-xs w-full sm:w-auto"
-                            onClick={() => handleRejectConsultation(consultation.id)}
-                          >
-                            <XCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                            Rejeitar
-                          </Button>
-                        </div>
-                      )}
-                    </div>
+                    
+                    {/* Action buttons */}
+                    {consultation.status === 'PENDING_CONFIRMATION' && (
+                      <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="bg-green-600 hover:bg-green-700 text-xs w-full sm:flex-1"
+                          onClick={() => handleConfirmConsultation(consultation.id)}
+                        >
+                          <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                          Confirmar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="text-xs w-full sm:flex-1"
+                          onClick={() => handleRejectConsultation(consultation.id)}
+                        >
+                          <XCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                          Rejeitar
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 text-gray-500">
-                <Stethoscope className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                <p className="text-lg font-medium mb-2">Nenhuma consulta encontrada</p>
-                <p className="text-sm">Você ainda não tem consultas agendadas</p>
+              <div className="text-center py-8 sm:py-12 text-gray-500">
+                <Stethoscope className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-gray-300" />
+                <p className="text-base sm:text-lg font-medium mb-2">Nenhuma consulta encontrada</p>
+                <p className="text-xs sm:text-sm">Você ainda não tem consultas agendadas</p>
               </div>
             )}
           </CardContent>

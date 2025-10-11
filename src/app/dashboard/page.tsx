@@ -122,24 +122,25 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Subscription Status */}
         {subscription ? (
-          <Card className="mb-8">
+          <Card className="mb-6 sm:mb-8">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <User className="h-5 w-5 mr-2" />
+              <CardTitle className="flex items-center text-base sm:text-lg">
+                <User className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 Seu Plano Atual
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex justify-between items-center">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                 <div>
-                  <h3 className="text-lg font-semibold">{subscription.plan.name}</h3>
-                  <p className="text-gray-600">R$ {subscription.plan.price}/mês</p>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="text-base sm:text-lg font-semibold">{subscription.plan.name}</h3>
+                  <p className="text-sm sm:text-base text-gray-600">R$ {subscription.plan.price}/mês</p>
+                  <p className="text-xs sm:text-sm text-gray-500">
                     Válido até {new Date(subscription.endDate).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
                 <Badge 
                   variant={subscription.status === 'ACTIVE' ? 'default' : 'destructive'}
+                  className="self-start sm:self-center"
                 >
                   {subscription.status === 'ACTIVE' ? 'Ativo' : 'Inativo'}
                 </Badge>
@@ -147,16 +148,16 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="mb-8 border-orange-200 bg-orange-50">
+          <Card className="mb-6 sm:mb-8 border-orange-200 bg-orange-50">
             <CardHeader>
-              <CardTitle className="text-orange-800">Nenhum plano ativo</CardTitle>
-              <CardDescription className="text-orange-700">
+              <CardTitle className="text-base sm:text-lg text-orange-800">Nenhum plano ativo</CardTitle>
+              <CardDescription className="text-sm text-orange-700">
                 Você precisa de um plano para agendar consultas
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/plans">
-                <Button className="bg-orange-600 hover:bg-orange-700">
+                <Button className="bg-orange-600 hover:bg-orange-700 w-full sm:w-auto">
                   Ver Planos
                 </Button>
               </Link>
@@ -250,36 +251,52 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {consultations.length > 0 ? (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {consultations.slice(0, 3).map((consultation) => (
-                  <div key={consultation.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-2">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-sm sm:text-base">{consultation.title}</h4>
-                      <p className="text-xs sm:text-sm text-gray-600">
-                        {new Date(consultation.scheduledAt).toLocaleDateString('pt-BR')}
-                      </p>
+                  <div key={consultation.id} className="flex flex-col gap-2 p-3 sm:p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-sm sm:text-base truncate">{consultation.title}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 flex-shrink-0" />
+                          <p className="text-xs sm:text-sm text-gray-600">
+                            {new Date(consultation.scheduledAt).toLocaleDateString('pt-BR', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric'
+                            })}
+                          </p>
+                          <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 flex-shrink-0 ml-2" />
+                          <p className="text-xs sm:text-sm text-gray-600">
+                            {new Date(consultation.scheduledAt).toLocaleTimeString('pt-BR', {
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge 
+                        variant={
+                          consultation.status === 'COMPLETED' ? 'default' :
+                          consultation.status === 'SCHEDULED' ? 'secondary' :
+                          'destructive'
+                        }
+                        className="text-xs self-start sm:self-center"
+                      >
+                        {consultation.status === 'COMPLETED' ? 'Concluída' :
+                         consultation.status === 'SCHEDULED' ? 'Agendada' :
+                         consultation.status === 'CANCELLED' ? 'Cancelada' : 'Em andamento'}
+                      </Badge>
                     </div>
-                    <Badge 
-                      variant={
-                        consultation.status === 'COMPLETED' ? 'default' :
-                        consultation.status === 'SCHEDULED' ? 'secondary' :
-                        'destructive'
-                      }
-                      className="text-xs"
-                    >
-                      {consultation.status === 'COMPLETED' ? 'Concluída' :
-                       consultation.status === 'SCHEDULED' ? 'Agendada' :
-                       consultation.status === 'CANCELLED' ? 'Cancelada' : 'Em andamento'}
-                    </Badge>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500">
-                <Stethoscope className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p>Nenhuma consulta encontrada</p>
-                <Link href="/consultations/new">
-                  <Button className="mt-4">
+              <div className="text-center py-8 sm:py-12 text-gray-500">
+                <Stethoscope className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-gray-300" />
+                <p className="text-sm sm:text-base mb-2">Nenhuma consulta encontrada</p>
+                <Link href="/consultations/new" className="inline-block">
+                  <Button className="mt-4 w-full sm:w-auto">
                     <Plus className="h-4 w-4 mr-2" />
                     Agendar primeira consulta
                   </Button>
