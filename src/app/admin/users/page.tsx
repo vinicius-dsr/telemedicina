@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Sidebar } from '@/components/Sidebar'
 import { 
   Users, 
   Plus, 
@@ -203,24 +204,14 @@ export default function UsersPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Users className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">Gerenciar Usuários</h1>
-            </div>
-            <div className="flex space-x-4">
-              <Button variant="outline" onClick={() => router.back()}>
-                Voltar
-              </Button>
-            </div>
+      <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
+      
+      <div className="lg:pl-64 xl:pl-72">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+          <div className="mb-6 flex items-center gap-3">
+            <Users className="h-8 w-8 text-blue-600" />
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Gerenciar Usuários</h1>
           </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Actions Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -398,6 +389,7 @@ export default function UsersPage() {
             )}
           </div>
         )}
+        </div>
       </div>
     </div>
   )

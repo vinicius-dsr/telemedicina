@@ -1,20 +1,19 @@
 'use client'
 
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Sidebar } from '@/components/Sidebar'
 import { 
   Users, 
   Stethoscope, 
   DollarSign, 
   TrendingUp,
   FileText,
-  Settings,
-  BarChart3,
-  LogOut
+  BarChart3
 } from 'lucide-react'
 
 interface DashboardStats {
@@ -99,30 +98,10 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Stethoscope className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">Painel Administrativo</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Olá, {session?.user?.name}</span>
-              <Button variant="outline" size="sm" onClick={() => router.push('/settings')}>
-                <Settings className="h-4 w-4 mr-2" />
-                Configurações
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => signOut({ callbackUrl: '/auth/login' })}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Sair
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
+      
+      <div className="lg:pl-64 xl:pl-72">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
@@ -330,6 +309,7 @@ export default function AdminDashboardPage() {
               )}
             </CardContent>
           </Card>
+        </div>
         </div>
       </div>
     </div>

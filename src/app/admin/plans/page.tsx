@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Sidebar } from '@/components/Sidebar'
 import { DollarSign, CheckCircle, Calendar } from 'lucide-react'
 
 interface Plan {
@@ -44,19 +45,14 @@ export default function AdminPlansPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-6 w-6 text-green-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Planos</h1>
-            </div>
-            <Button variant="outline" onClick={() => router.back()}>Voltar</Button>
+      <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
+      
+      <div className="lg:pl-64 xl:pl-72">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+          <div className="mb-6 flex items-center gap-3">
+            <DollarSign className="h-8 w-8 text-green-600" />
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Planos</h1>
           </div>
-        </div>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {plans.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
@@ -113,6 +109,7 @@ export default function AdminPlansPage() {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   )

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Sidebar } from '@/components/Sidebar'
 import { CheckCircle, Star } from 'lucide-react'
 import Link from 'next/link'
 
@@ -65,31 +66,22 @@ export default function PlansPage() {
     )
   }
 
+  const userWithRole = session?.user as { name?: string; role?: string } | undefined
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
+      {session && <Sidebar userRole={userWithRole?.role} userName={userWithRole?.name ?? undefined} />}
+      
+      <div className={session ? "lg:pl-64 xl:pl-72" : ""}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+          {!session && (
+            <div className="mb-6 flex justify-between items-center">
               <h1 className="text-2xl font-bold text-gray-900">Planos</h1>
+              <Link href="/auth/login">
+                <Button variant="outline">Login</Button>
+              </Link>
             </div>
-            <div className="flex space-x-4">
-              {session ? (
-                <Link href="/dashboard">
-                  <Button variant="outline">Dashboard</Button>
-                </Link>
-              ) : (
-                <Link href="/auth/login">
-                  <Button variant="outline">Login</Button>
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          )}
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             Escolha seu plano
@@ -267,6 +259,7 @@ export default function PlansPage() {
               </p>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

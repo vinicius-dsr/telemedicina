@@ -16,19 +16,19 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-4 sm:py-6">
             <div className="flex items-center">
-              <Stethoscope className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">Telemedicina</h1>
+              <Stethoscope className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 mr-2" />
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Telemedicina</h1>
             </div>
-            <div className="flex space-x-4">
+            <div className="flex space-x-2 sm:space-x-4">
               <Link href="/auth/login">
-                <Button variant="outline">Login</Button>
+                <Button variant="outline" size="sm" className="sm:px-4">Login</Button>
               </Link>
               <Link href="/auth/register">
-                <Button>Cadastrar</Button>
+                <Button size="sm" className="sm:px-4">Cadastrar</Button>
               </Link>
             </div>
           </div>
@@ -36,23 +36,23 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="py-20">
+      <section className="py-12 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-gray-900 mb-4 sm:mb-6">
             Consultas Médicas
             <span className="text-blue-600 block">Online</span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
             Acesse cuidados médicos de qualidade de qualquer lugar, a qualquer hora. 
             Nossa plataforma conecta você a profissionais de saúde qualificados.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/register">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Link href="/auth/register" className="w-full sm:w-auto">
               <Button size="lg" className="w-full sm:w-auto">
                 Começar Agora
               </Button>
             </Link>
-            <Link href="/auth/login">
+            <Link href="/auth/login" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full sm:w-auto">
                 Já tenho conta
               </Button>
@@ -62,18 +62,18 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
               Por que escolher nossa plataforma?
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-base sm:text-lg text-gray-600">
               Oferecemos uma experiência completa de telemedicina
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
             <Card>
               <CardHeader>
                 <Clock className="h-12 w-12 text-blue-600 mb-4" />
@@ -138,18 +138,18 @@ export default function HomePage() {
       </section>
 
       {/* Plans Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-12 sm:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <div className="text-center mb-8 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
               Escolha seu plano
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-base sm:text-lg text-gray-600">
               Planos flexíveis para atender suas necessidades
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             <Card>
               <CardHeader>
                 <CardTitle className="text-center">Básico</CardTitle>
@@ -256,17 +256,17 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
-              <Stethoscope className="h-8 w-8 text-blue-400 mr-2" />
-              <h3 className="text-2xl font-bold">Telemedicina</h3>
+            <div className="flex items-center justify-center mb-3 sm:mb-4">
+              <Stethoscope className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400 mr-2" />
+              <h3 className="text-xl sm:text-2xl font-bold">Telemedicina</h3>
             </div>
-            <p className="text-gray-400 mb-4">
+            <p className="text-sm sm:text-base text-gray-400 mb-3 sm:mb-4">
               Cuidando da sua saúde com tecnologia e humanização
             </p>
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 text-xs sm:text-sm">
               © 2024 Telemedicina. Todos os direitos reservados.
             </p>
           </div>

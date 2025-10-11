@@ -1,20 +1,19 @@
 'use client'
 
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Sidebar } from '@/components/Sidebar'
 import { 
   Calendar, 
   Stethoscope, 
   FileText, 
   Clock,
   Plus,
-  User,
-  Settings,
-  LogOut
+  User
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -117,29 +116,10 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 gap-3">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-              <span className="text-sm sm:text-base text-gray-700">Olá, {user?.name ?? 'Usuário'}</span>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
-            </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <Button variant="outline" size="sm" onClick={() => router.push('/settings')} className="flex-1 sm:flex-none">
-                <Settings className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Configurações</span>
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => signOut({ callbackUrl: '/auth/login' })} className="flex-1 sm:flex-none">
-                <LogOut className="h-4 w-4 sm:mr-2" />
-                <span className="hidden sm:inline">Sair</span>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Sidebar userRole={userRole} userName={user?.name ?? 'Usuário'} />
+      
+      <div className="lg:pl-64 xl:pl-72">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Subscription Status */}
         {subscription ? (
           <Card className="mb-8">
@@ -308,6 +288,7 @@ export default function DashboardPage() {
             )}
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   )

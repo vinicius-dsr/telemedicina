@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Sidebar } from '@/components/Sidebar'
 import { Stethoscope, User, Calendar, Clock, Filter } from 'lucide-react'
 
 interface Doctor {
@@ -125,19 +126,14 @@ export default function AdminConsultationsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4 sm:py-6">
-            <div className="flex items-center gap-2">
-              <Stethoscope className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600" />
-              <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Consultas</h1>
-            </div>
-            <Button variant="outline" size="sm" onClick={() => router.back()}>Voltar</Button>
+      <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
+      
+      <div className="lg:pl-64 xl:pl-72">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+          <div className="mb-6 flex items-center gap-3">
+            <Stethoscope className="h-8 w-8 text-purple-600" />
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Consultas</h1>
           </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Estatísticas por Médico */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {consultationsByDoctor.map(({ doctor, count, pending, confirmed }) => (
@@ -291,6 +287,7 @@ export default function AdminConsultationsPage() {
             )}
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   )

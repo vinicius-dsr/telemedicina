@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Sidebar } from '@/components/Sidebar'
 import { 
   Calendar,
   Clock,
@@ -96,32 +97,24 @@ export default function ConsultationsPage() {
     )
   }
 
+  const userWithRole = session?.user as { name?: string; role?: string } | undefined
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Stethoscope className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">Minhas Consultas</h1>
-            </div>
-            <div className="flex space-x-4">
-              <Button onClick={() => router.back()} variant="outline">
-                Voltar
+      <Sidebar userRole={userWithRole?.role} userName={userWithRole?.name ?? undefined} />
+      
+      <div className="lg:pl-64 xl:pl-72">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+          {/* Page Header */}
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Minhas Consultas</h1>
+            <Link href="/consultations/new">
+              <Button className="w-full sm:w-auto">
+                <Plus className="h-4 w-4 mr-2" />
+                Agendar Consulta
               </Button>
-              <Link href="/consultations/new">
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Agendar Consulta
-                </Button>
-              </Link>
-            </div>
+            </Link>
           </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
@@ -164,8 +157,8 @@ export default function ConsultationsPage() {
           </Card>
         </div>
 
-        {/* Consultations List */}
-        <div className="space-y-4">
+          {/* Consultations List */}
+          <div className="space-y-4">
           {consultations.length === 0 ? (
             <Card>
               <CardContent className="text-center py-12">
@@ -245,6 +238,7 @@ export default function ConsultationsPage() {
               </Card>
             ))
           )}
+        </div>
         </div>
       </div>
     </div>
