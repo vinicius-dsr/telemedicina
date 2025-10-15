@@ -348,7 +348,7 @@ export default function HomePage() {
                       <p className="text-sm text-muted-foreground">Paciente</p>
                     </div>
                   </div>
-                  <p className="text-sm">"A praticidade de ter uma consulta no conforto de casa não tem preço. Serviço excelente e médicos muito atenciosos."</p>
+                  <p className="text-sm">&ldquo;A praticidade de ter uma consulta no conforto de casa não tem preço. Serviço excelente e médicos muito atenciosos.&rdquo;</p>
                 </Card>
                 <Card className="flex flex-col gap-4 p-6 bg-card border-border">
                   <div className="flex items-center gap-4">
@@ -358,7 +358,7 @@ export default function HomePage() {
                       <p className="text-sm text-muted-foreground">Paciente</p>
                     </div>
                   </div>
-                  <p className="text-sm">"Plataforma fácil de usar e o plano família é perfeito para nós. Recomendo a todos que buscam conveniência e qualidade."</p>
+                  <p className="text-sm">&ldquo;Plataforma fácil de usar e o plano família é perfeito para nós. Recomendo a todos que buscam conveniência e qualidade.&rdquo;</p>
                 </Card>
                 <Card className="flex flex-col gap-4 p-6 bg-card border-border">
                   <div className="flex items-center gap-4">
@@ -368,7 +368,7 @@ export default function HomePage() {
                       <p className="text-sm text-muted-foreground">Paciente</p>
                     </div>
                   </div>
-                  <p className="text-sm">"Consegui resolver um problema de saúde rapidamente sem precisar sair de casa. O sistema de prescrição digital é muito eficiente."</p>
+                  <p className="text-sm">&ldquo;Consegui resolver um problema de saúde rapidamente sem precisar sair de casa. O sistema de prescrição digital é muito eficiente.&rdquo;</p>
                 </Card>
               </div>
             </div>
