@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { PrismaClient } = require('@prisma/client')
 const bcrypt = require('bcryptjs')
 
@@ -5,20 +6,23 @@ const prisma = new PrismaClient()
 
 async function createAdmin() {
   try {
-    const email = 'admin@example.com'
-    // Verificar se o admin já existe
-    const existingAdmin = await prisma.user.findUnique({ where: { email } })
+    const email = process.env.ADMIN_EMAIL
+    const password = process.env.ADMIN_PASSWORD
 
-    if (existingAdmin) {
-      console.log('Usuário admin já existe!')
-      console.log('Email:', email)
+    if (!email || !password) {
+      console.error('Variáveis ADMIN_EMAIL e ADMIN_PASSWORD não configuradas.')
       return
     }
 
-    // Hash da senha
-    const hashedPassword = await bcrypt.hash('REDACTED_PASSWORD', 12)
+    const existingAdmin = await prisma.user.findUnique({ where: { email } })
 
-    // Criar usuário admin
+    if (existingAdmin) {
+      console.log('Usuário admin já existe para o email configurado.')
+      return
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12)
+
     const admin = await prisma.user.create({
       data: {
         name: 'Administrador',
@@ -28,9 +32,7 @@ async function createAdmin() {
       }
     })
 
-    console.log('Usuário admin criado com sucesso!')
-    console.log('Email:', email)
-    console.log('Senha: REDACTED_PASSWORD')
+    console.log('Usuário admin criado com sucesso.')
     console.log('ID:', admin.id)
   } catch (error) {
     console.error('Erro ao criar usuário admin:', error)

@@ -7,10 +7,8 @@ async function tryConnect(name, connString) {
     console.log(`Tentando conectar usando ${name}...`)
     await client.connect()
     console.log(`${name}: Conectado ao banco com sucesso`)
-    const res = await client.query("SELECT id, email, name FROM users WHERE email = 'admin@example.com'")
-    console.log(`${name}: Resultado:`, res.rows)
   } catch (err) {
-    console.error(`${name}: Erro ao conectar/consultar DB:`, err)
+    console.error(`${name}: Erro ao conectar ao DB:`, err)
   } finally {
     try { await client.end() } catch (e) {}
   }
