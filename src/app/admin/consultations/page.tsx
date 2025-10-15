@@ -115,24 +115,24 @@ export default function AdminConsultationsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          <p className="mt-4 text-muted-foreground">Carregando...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
       
-      <div className="lg:pl-64 xl:pl-72">
+      <div className="lg:pl-64 xl:pl-72 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="mb-6 flex items-center gap-3">
-            <Stethoscope className="h-8 w-8 text-purple-600" />
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Consultas</h1>
+            <Stethoscope className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Consultas</h1>
           </div>
         {/* Estatísticas por Médico */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -152,16 +152,16 @@ export default function AdminConsultationsPage() {
               <CardContent>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Total:</span>
-                    <span className="font-semibold">{count}</span>
+                    <span className="text-muted-foreground">Total:</span>
+                    <span className="font-semibold text-foreground">{count}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Pendentes:</span>
-                    <span className="font-semibold text-yellow-600">{pending}</span>
+                    <span className="text-muted-foreground">Pendentes:</span>
+                    <span className="font-semibold text-secondary">{pending}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Confirmadas:</span>
-                    <span className="font-semibold text-green-600">{confirmed}</span>
+                    <span className="text-muted-foreground">Confirmadas:</span>
+                    <span className="font-semibold text-primary">{confirmed}</span>
                   </div>
                 </div>
               </CardContent>
@@ -231,19 +231,19 @@ export default function AdminConsultationsPage() {
           </CardHeader>
           <CardContent>
             {filteredConsultations.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <Stethoscope className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-                <p className="text-lg font-medium mb-2">Nenhuma consulta encontrada</p>
+              <div className="text-center py-12 text-muted-foreground">
+                <Stethoscope className="h-16 w-16 mx-auto mb-4 text-muted-foreground/30" />
+                <p className="text-lg font-medium mb-2 text-foreground">Nenhuma consulta encontrada</p>
                 <p className="text-sm">Tente ajustar os filtros</p>
               </div>
             ) : (
               <div className="space-y-4">
                 {filteredConsultations.map(consultation => (
-                  <div key={consultation.id} className="border rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+                  <div key={consultation.id} className="border border-border rounded-lg p-3 sm:p-4 hover:bg-muted/50 dark:hover:bg-muted transition-colors bg-background dark:bg-card">
                     <div className="flex flex-col sm:flex-row justify-between items-start gap-2 mb-3">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-base sm:text-lg mb-1">{consultation.title}</h3>
-                        <p className="text-xs sm:text-sm text-gray-600 mb-2">{consultation.description}</p>
+                        <h3 className="font-semibold text-base sm:text-lg mb-1 text-foreground">{consultation.title}</h3>
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-2">{consultation.description}</p>
                       </div>
                       {getStatusBadge(consultation.status)}
                     </div>
@@ -251,12 +251,12 @@ export default function AdminConsultationsPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
-                          <User className="h-4 w-4 text-gray-500" />
+                          <User className="h-4 w-4 text-muted-foreground" />
                           <span className="font-medium">Paciente:</span>
                           <span>{consultation.user.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Stethoscope className="h-4 w-4 text-gray-500" />
+                          <Stethoscope className="h-4 w-4 text-muted-foreground" />
                           <span className="font-medium">Médico:</span>
                           <span>{consultation.doctor?.name || 'Não atribuído'}</span>
                         </div>
@@ -264,12 +264,12 @@ export default function AdminConsultationsPage() {
 
                       <div>
                         <div className="flex items-center gap-2 mb-2">
-                          <Calendar className="h-4 w-4 text-gray-500" />
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
                           <span className="font-medium">Data:</span>
                           <span>{new Date(consultation.scheduledAt).toLocaleDateString('pt-BR')}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-gray-500" />
+                          <Clock className="h-4 w-4 text-muted-foreground" />
                           <span className="font-medium">Horário:</span>
                           <span>
                             {new Date(consultation.scheduledAt).toLocaleTimeString('pt-BR', {

@@ -101,10 +101,10 @@ export default function DashboardPage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          <p className="mt-4 text-muted-foreground">Carregando...</p>
         </div>
       </div>
     )
@@ -115,14 +115,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole={userRole} userName={user?.name ?? 'Usuário'} />
       
-      <div className="lg:pl-64 xl:pl-72">
+      <div className="lg:pl-64 xl:pl-72 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Subscription Status */}
         {subscription ? (
-          <Card className="mb-6 sm:mb-8">
+          <Card className="mb-6 sm:mb-8 bg-background dark:bg-muted border-border">
             <CardHeader>
               <CardTitle className="flex items-center text-base sm:text-lg">
                 <User className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
@@ -133,8 +133,8 @@ export default function DashboardPage() {
               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold">{subscription.plan.name}</h3>
-                  <p className="text-sm sm:text-base text-gray-600">R$ {subscription.plan.price}/mês</p>
-                  <p className="text-xs sm:text-sm text-gray-500">
+                  <p className="text-sm sm:text-base text-muted-foreground">R$ {subscription.plan.price}/mês</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Válido até {new Date(subscription.endDate).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
@@ -148,16 +148,16 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="mb-6 sm:mb-8 border-orange-200 bg-orange-50">
+          <Card className="mb-6 sm:mb-8 border-destructive/30 bg-destructive/10 dark:bg-destructive/5">
             <CardHeader>
-              <CardTitle className="text-base sm:text-lg text-orange-800">Nenhum plano ativo</CardTitle>
-              <CardDescription className="text-sm text-orange-700">
+              <CardTitle className="text-base sm:text-lg text-destructive">Nenhum plano ativo</CardTitle>
+              <CardDescription className="text-sm text-destructive/80">
                 Você precisa de um plano para agendar consultas
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/plans">
-                <Button className="bg-orange-600 hover:bg-orange-700 w-full sm:w-auto">
+                <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 w-full sm:w-auto">
                   Ver Planos
                 </Button>
               </Link>
@@ -167,15 +167,15 @@ export default function DashboardPage() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-foreground">
                 Agendar Consulta
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-                <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+                <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                 <Link href="/consultations/new" className="w-full sm:w-auto">
                   <Button size="sm" className="w-full sm:w-auto text-xs">
                     <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
@@ -186,15 +186,15 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-foreground">
                 Minhas Consultas
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-                <Stethoscope className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
+                <Stethoscope className="h-6 w-6 sm:h-8 sm:w-8 text-secondary" />
                 <Link href="/consultations" className="w-full sm:w-auto">
                   <Button size="sm" variant="outline" className="w-full sm:w-auto text-xs">
                     Ver todas
@@ -204,15 +204,15 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-foreground">
                 Prontuário
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-                <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
+                <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                 <Link href="/medical-records" className="w-full sm:w-auto">
                   <Button size="sm" variant="outline" className="w-full sm:w-auto text-xs">
                     Acessar
@@ -222,15 +222,15 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">
+              <CardTitle className="text-xs sm:text-sm font-medium text-foreground">
                 Histórico
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
-                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-secondary" />
                 <Link href="/history" className="w-full sm:w-auto">
                   <Button size="sm" variant="outline" className="w-full sm:w-auto text-xs">
                     Ver histórico
@@ -242,7 +242,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Consultations */}
-        <Card>
+        <Card className="bg-background dark:bg-muted border-border">
           <CardHeader>
             <CardTitle>Consultas Recentes</CardTitle>
             <CardDescription>
@@ -253,21 +253,21 @@ export default function DashboardPage() {
             {consultations.length > 0 ? (
               <div className="space-y-3 sm:space-y-4">
                 {consultations.slice(0, 3).map((consultation) => (
-                  <div key={consultation.id} className="flex flex-col gap-2 p-3 sm:p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                  <div key={consultation.id} className="flex flex-col gap-2 p-3 sm:p-4 border border-border rounded-lg hover:bg-muted/50 dark:hover:bg-muted transition-colors bg-background dark:bg-card">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-sm sm:text-base truncate">{consultation.title}</h4>
                         <div className="flex items-center gap-2 mt-1">
-                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 flex-shrink-0" />
-                          <p className="text-xs sm:text-sm text-gray-600">
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0" />
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             {new Date(consultation.scheduledAt).toLocaleDateString('pt-BR', {
                               day: '2-digit',
                               month: '2-digit',
                               year: 'numeric'
                             })}
                           </p>
-                          <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 flex-shrink-0 ml-2" />
-                          <p className="text-xs sm:text-sm text-gray-600">
+                          <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground flex-shrink-0 ml-2" />
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             {new Date(consultation.scheduledAt).toLocaleTimeString('pt-BR', {
                               hour: '2-digit',
                               minute: '2-digit'
@@ -292,8 +292,8 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 sm:py-12 text-gray-500">
-                <Stethoscope className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-gray-300" />
+              <div className="text-center py-8 sm:py-12 text-muted-foreground">
+                <Stethoscope className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 text-muted-foreground/30" />
                 <p className="text-sm sm:text-base mb-2">Nenhuma consulta encontrada</p>
                 <Link href="/consultations/new" className="inline-block">
                   <Button className="mt-4 w-full sm:w-auto">

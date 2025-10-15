@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme-toggle'
 import {
   Stethoscope,
   Home,
@@ -73,12 +74,12 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
   const SidebarContent = () => (
     <>
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-4 border-b">
-        <Stethoscope className="h-8 w-8 text-blue-600" />
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-sidebar-border">
+        <Stethoscope className="h-8 w-8 text-sidebar-primary" />
         <div className="flex flex-col">
-          <h1 className="text-xl font-bold text-gray-900">Telemedicina</h1>
+          <h1 className="text-xl font-bold text-sidebar-foreground">Telemedicina</h1>
           {userRole && (
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-sidebar-foreground/60">
               {userRole === 'ADMIN' ? 'Admin' : userRole === 'DOCTOR' ? 'Médico' : 'Paciente'}
             </span>
           )}
@@ -87,14 +88,14 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
 
       {/* User Info */}
       {userName && (
-        <div className="px-6 py-4 border-b bg-gray-50">
+        <div className="px-6 py-4 border-b border-sidebar-border bg-sidebar-accent">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-              <User className="h-5 w-5 text-blue-600" />
+            <div className="h-10 w-10 rounded-full bg-sidebar-primary/10 flex items-center justify-center">
+              <User className="h-5 w-5 text-sidebar-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{userName}</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm font-medium text-sidebar-foreground truncate">{userName}</p>
+              <p className="text-xs text-sidebar-foreground/60">
                 {userRole === 'ADMIN' ? 'Administrador' : 
                  userRole === 'DOCTOR' ? 'Médico(a)' : 'Paciente'}
               </p>
@@ -118,8 +119,8 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
                   className={cn(
                     'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200',
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-100 hover:text-blue-600'
+                      ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-md'
+                      : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-primary'
                   )}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
@@ -131,12 +132,16 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
         </ul>
       </nav>
 
-      {/* Logout Button */}
-      <div className="px-4 py-4 border-t">
+      {/* Theme Toggle & Logout */}
+      <div className="px-4 py-4 border-t border-sidebar-border space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-sidebar-foreground/60">Tema</span>
+          <ThemeToggle />
+        </div>
         <Button
           onClick={handleLogout}
           variant="outline"
-          className="w-full justify-start gap-3 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+          className="w-full justify-start gap-3 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20"
         >
           <LogOut className="h-5 w-5" />
           <span>Sair</span>
@@ -148,10 +153,10 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
   return (
     <>
       {/* Mobile Menu Button */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar border-b border-sidebar-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Stethoscope className="h-6 w-6 text-blue-600" />
-          <h1 className="text-lg font-bold text-gray-900">Telemedicina</h1>
+          <Stethoscope className="h-6 w-6 text-sidebar-primary" />
+          <h1 className="text-lg font-bold text-sidebar-foreground">Telemedicina</h1>
         </div>
         <Button
           variant="ghost"
@@ -174,7 +179,7 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
       {/* Mobile Sidebar */}
       <aside
         className={cn(
-          'lg:hidden fixed top-0 left-0 bottom-0 w-80 bg-white z-50 transform transition-transform duration-300 ease-in-out flex flex-col',
+          'lg:hidden fixed top-0 left-0 bottom-0 w-80 bg-sidebar z-50 transform transition-transform duration-300 ease-in-out flex flex-col border-r border-sidebar-border',
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -182,7 +187,7 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
       </aside>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:fixed lg:top-0 lg:left-0 lg:bottom-0 lg:w-64 xl:w-72 bg-white border-r z-30">
+      <aside className="hidden lg:flex lg:flex-col lg:fixed lg:top-0 lg:left-0 lg:bottom-0 lg:w-64 xl:w-72 bg-sidebar border-r border-sidebar-border z-30">
         <SidebarContent />
       </aside>
 

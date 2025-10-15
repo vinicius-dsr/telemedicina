@@ -64,7 +64,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-muted py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Cadastro</CardTitle>
@@ -123,16 +123,16 @@ export default function RegisterPage() {
               />
             </div>
             {error && (
-              <div className="text-red-500 text-sm text-center">{error}</div>
+              <div className="text-destructive text-sm text-center">{error}</div>
             )}
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Criando conta...' : 'Criar conta'}
             </Button>
           </form>
           <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Já tem uma conta?{' '}
-              <Link href="/auth/login" className="text-blue-600 hover:underline">
+              <Link href="/auth/login" className="text-primary hover:underline">
                 Faça login
               </Link>
             </p>

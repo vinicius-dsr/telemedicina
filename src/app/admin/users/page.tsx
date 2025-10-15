@@ -187,10 +187,10 @@ export default function UsersPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Carregando usuários...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          <p className="mt-4 text-muted-foreground">Carregando usuários...</p>
         </div>
       </div>
     )
@@ -203,19 +203,19 @@ export default function UsersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
       
-      <div className="lg:pl-64 xl:pl-72">
+      <div className="lg:pl-64 xl:pl-72 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="mb-6 flex items-center gap-2 sm:gap-3">
-            <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Gerenciar Usuários</h1>
+            <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-foreground">Gerenciar Usuários</h1>
           </div>
         {/* Actions Bar */}
         <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4 mb-6">
           <div className="relative flex-1 sm:flex-initial">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
               placeholder="Buscar usuários..."
               value={searchTerm}
@@ -316,26 +316,26 @@ export default function UsersPage() {
         {/* Users List */}
         <div className="grid gap-4">
           {filteredUsers.map((user) => (
-            <Card key={user.id}>
+            <Card key={user.id} className="bg-background dark:bg-muted border-border">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   {/* User Info Section */}
                   <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
                     <div className="flex-shrink-0">
                       {user.role === 'ADMIN' ? (
-                        <Shield className="h-8 w-8 sm:h-10 sm:w-10 text-red-600" />
+                        <Shield className="h-8 w-8 sm:h-10 sm:w-10 text-destructive" />
                       ) : (
-                        <User className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600" />
+                        <User className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <h3 className="text-base sm:text-lg font-medium text-gray-900 truncate">
+                        <h3 className="text-base sm:text-lg font-medium text-foreground truncate">
                           {user.name}
                         </h3>
                         {getRoleBadge(user.role)}
                       </div>
-                      <div className="space-y-1 text-sm text-gray-600">
+                      <div className="space-y-1 text-sm text-muted-foreground">
                         <div className="flex items-center break-all">
                           <Mail className="h-4 w-4 mr-1 flex-shrink-0" />
                           <span className="truncate">{user.email}</span>
@@ -363,7 +363,7 @@ export default function UsersPage() {
                       size="sm"
                       variant="outline"
                       onClick={() => handleDeleteUser(user.id)}
-                      className="text-red-600 hover:text-red-700 flex-1 sm:flex-initial w-full"
+                      className="text-destructive hover:text-destructive/80 border-destructive/20 hover:bg-destructive/10 flex-1 sm:flex-initial w-full"
                     >
                       <Trash2 className="h-4 w-4 sm:mr-0" />
                       <span className="ml-2 sm:hidden">Excluir</span>
@@ -377,11 +377,11 @@ export default function UsersPage() {
 
         {filteredUsers.length === 0 && (
           <div className="text-center py-12 px-4">
-            <Users className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">
+            <Users className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground/30 mx-auto mb-4" />
+            <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">
               Nenhum usuário encontrado
             </h3>
-            <p className="text-sm sm:text-base text-gray-600 mb-6">
+            <p className="text-sm sm:text-base text-muted-foreground mb-6">
               {searchTerm ? 'Tente ajustar os filtros de busca' : 'Comece criando o primeiro usuário'}
             </p>
             {!searchTerm && (

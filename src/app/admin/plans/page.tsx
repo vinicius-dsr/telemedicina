@@ -44,28 +44,28 @@ export default function AdminPlansPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
       
-      <div className="lg:pl-64 xl:pl-72">
+      <div className="lg:pl-64 xl:pl-72 bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="mb-6 flex items-center gap-3">
-            <DollarSign className="h-8 w-8 text-green-600" />
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Planos</h1>
+            <DollarSign className="h-8 w-8 text-secondary" />
+            <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Planos</h1>
           </div>
         {plans.length === 0 ? (
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardContent className="py-12 text-center">
-              <DollarSign className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Nenhum plano cadastrado</h3>
-              <p className="text-gray-600 mb-4">Execute o seed do banco de dados para criar planos iniciais</p>
-              <code className="bg-gray-100 px-4 py-2 rounded text-sm">npm run db:seed</code>
+              <DollarSign className="h-16 w-16 mx-auto mb-4 text-muted-foreground/30" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">Nenhum plano cadastrado</h3>
+              <p className="text-muted-foreground mb-4">Execute o seed do banco de dados para criar planos iniciais</p>
+              <code className="bg-muted px-4 py-2 rounded text-sm text-foreground">npm run db:seed</code>
             </CardContent>
           </Card>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {plans.map((p) => (
-              <Card key={p.id} className={p.isActive ? 'border-green-200' : 'border-gray-200'}>
+              <Card key={p.id} className={`bg-background dark:bg-muted border-border ${p.isActive ? 'border-primary' : ''}`}>
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <CardTitle>{p.name}</CardTitle>
@@ -77,10 +77,10 @@ export default function AdminPlansPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <div className="text-3xl font-bold text-green-600">
+                    <div className="text-3xl font-bold text-secondary">
                       R$ {p.price.toFixed(2)}
                     </div>
-                    <div className="text-sm text-gray-600 flex items-center gap-1">
+                    <div className="text-sm text-muted-foreground flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
                       {p.duration} dias
                     </div>
@@ -93,11 +93,11 @@ export default function AdminPlansPage() {
                         {p.features.slice(0, 3).map((feature, idx) => (
                           <li key={idx} className="flex items-start text-sm">
                             <CheckCircle className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                            <span className="text-gray-700">{feature}</span>
+                            <span className="text-foreground">{feature}</span>
                           </li>
                         ))}
                         {p.features.length > 3 && (
-                          <li className="text-sm text-gray-500 ml-6">
+                          <li className="text-sm text-muted-foreground ml-6">
                             +{p.features.length - 3} mais recursos
                           </li>
                         )}

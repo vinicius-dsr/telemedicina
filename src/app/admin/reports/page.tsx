@@ -22,16 +22,16 @@ export default function AdminReportsPage() {
   }, [session, status, router, user?.role])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
       
-      <div className="lg:pl-64 xl:pl-72">
+      <div className="lg:pl-64 xl:pl-72 bg-background">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="mb-6 flex items-center gap-3">
-            <FileText className="h-8 w-8 text-orange-600" />
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Relatórios</h1>
+            <FileText className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Relatórios</h1>
           </div>
-        <Card>
+        <Card className="bg-background dark:bg-muted border-border">
           <CardHeader>
             <CardTitle>Gerar Relatórios</CardTitle>
             <CardDescription>Em breve: seleção de período e tipos de relatório</CardDescription>

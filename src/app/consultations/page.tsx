@@ -64,13 +64,13 @@ export default function ConsultationsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'SCHEDULED':
-        return <Badge className="bg-blue-100 text-blue-800"><Clock className="h-3 w-3 mr-1" />Agendada</Badge>
+        return <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" />Agendada</Badge>
       case 'IN_PROGRESS':
-        return <Badge className="bg-yellow-100 text-yellow-800"><AlertCircle className="h-3 w-3 mr-1" />Em Andamento</Badge>
+        return <Badge variant="secondary"><AlertCircle className="h-3 w-3 mr-1" />Em Andamento</Badge>
       case 'COMPLETED':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Concluída</Badge>
+        return <Badge variant="default"><CheckCircle className="h-3 w-3 mr-1" />Concluída</Badge>
       case 'CANCELLED':
-        return <Badge className="bg-red-100 text-red-800"><XCircle className="h-3 w-3 mr-1" />Cancelada</Badge>
+        return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Cancelada</Badge>
       default:
         return <Badge variant="outline">{status}</Badge>
     }
@@ -88,10 +88,10 @@ export default function ConsultationsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Carregando consultas...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          <p className="mt-4 text-muted-foreground">Carregando consultas...</p>
         </div>
       </div>
     )
@@ -100,14 +100,14 @@ export default function ConsultationsPage() {
   const userWithRole = session?.user as { name?: string; role?: string } | undefined
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole={userWithRole?.role} userName={userWithRole?.name ?? undefined} />
       
-      <div className="lg:pl-64 xl:pl-72">
+      <div className="lg:pl-64 xl:pl-72 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           {/* Page Header */}
           <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Minhas Consultas</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Minhas Consultas</h1>
             <Link href="/consultations/new">
               <Button className="w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
@@ -117,40 +117,40 @@ export default function ConsultationsPage() {
           </div>
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Consultas Agendadas
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-2xl font-bold text-primary">
                 {consultations.filter(c => c.status === 'SCHEDULED').length}
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Consultas Concluídas
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-secondary">
                 {consultations.filter(c => c.status === 'COMPLETED').length}
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Total de Consultas
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-2xl font-bold text-foreground">
                 {consultations.length}
               </div>
             </CardContent>
@@ -160,13 +160,13 @@ export default function ConsultationsPage() {
           {/* Consultations List */}
           <div className="space-y-4">
           {consultations.length === 0 ? (
-            <Card>
+            <Card className="bg-background dark:bg-muted border-border">
               <CardContent className="text-center py-12">
-                <Stethoscope className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <Stethoscope className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">
                   Nenhuma consulta encontrada
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-muted-foreground mb-6">
                   Você ainda não possui consultas agendadas. Agende sua primeira consulta agora!
                 </p>
                 <Link href="/consultations/new">
@@ -179,22 +179,22 @@ export default function ConsultationsPage() {
             </Card>
           ) : (
             consultations.map((consultation) => (
-              <Card key={consultation.id} className="hover:shadow-md transition-shadow">
+              <Card key={consultation.id} className="hover:shadow-md transition-shadow bg-background dark:bg-muted border-border">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-foreground">
                           {consultation.title}
                         </h3>
                         {getStatusBadge(consultation.status)}
                       </div>
                       
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-muted-foreground mb-4">
                         {consultation.description}
                       </p>
                       
-                      <div className="flex items-center space-x-6 text-sm text-gray-500">
+                      <div className="flex items-center space-x-6 text-sm text-muted-foreground">
                         <div className="flex items-center">
                           <Calendar className="h-4 w-4 mr-1" />
                           {formatDate(consultation.scheduledAt)}
@@ -206,12 +206,12 @@ export default function ConsultationsPage() {
                       </div>
 
                       {consultation.notes && (
-                        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                        <div className="mt-4 p-3 bg-muted rounded-lg">
                           <div className="flex items-center mb-1">
-                            <FileText className="h-4 w-4 mr-1 text-gray-500" />
-                            <span className="text-sm font-medium text-gray-700">Observações:</span>
+                            <FileText className="h-4 w-4 mr-1 text-muted-foreground" />
+                            <span className="text-sm font-medium text-foreground">Observações:</span>
                           </div>
-                          <p className="text-sm text-gray-600">{consultation.notes}</p>
+                          <p className="text-sm text-muted-foreground">{consultation.notes}</p>
                         </div>
                       )}
                     </div>
@@ -222,7 +222,7 @@ export default function ConsultationsPage() {
                           <Button size="sm" variant="outline">
                             Reagendar
                           </Button>
-                          <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700">
+                          <Button size="sm" variant="outline" className="text-destructive hover:text-destructive/80 border-destructive/20 hover:bg-destructive/10">
                             Cancelar
                           </Button>
                         </>

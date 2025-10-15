@@ -47,7 +47,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-muted py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
@@ -80,16 +80,16 @@ export default function LoginPage() {
               />
             </div>
             {error && (
-              <div className="text-red-500 text-sm text-center">{error}</div>
+              <div className="text-destructive text-sm text-center">{error}</div>
             )}
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? 'Entrando...' : 'Entrar'}
             </Button>
           </form>
           <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Não tem uma conta?{' '}
-              <Link href="/auth/register" className="text-blue-600 hover:underline">
+              <Link href="/auth/register" className="text-primary hover:underline">
                 Cadastre-se
               </Link>
             </p>

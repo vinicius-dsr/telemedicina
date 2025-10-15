@@ -81,10 +81,10 @@ export default function AdminDashboardPage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          <p className="mt-4 text-muted-foreground">Carregando...</p>
         </div>
       </div>
     )
@@ -97,14 +97,14 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole="ADMIN" userName={session?.user?.name ?? undefined} />
       
-      <div className="lg:pl-64 xl:pl-72">
+      <div className="lg:pl-64 xl:pl-72 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total de Usuários</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Assinaturas Ativas</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -130,7 +130,7 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Consultas Totais</CardTitle>
               <Stethoscope className="h-4 w-4 text-muted-foreground" />
@@ -143,7 +143,7 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Receita Mensal</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -161,15 +161,15 @@ export default function AdminDashboardPage() {
 
         {/* Quick Actions */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => router.push('/admin/users')}>
+          <Card className="cursor-pointer hover:shadow-md transition-shadow bg-background dark:bg-muted border-border" onClick={() => router.push('/admin/users')}>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Gerenciar Usuários
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <Users className="h-8 w-8 text-blue-600" />
+                <Users className="h-8 w-8 text-primary" />
                 <Button size="sm" onClick={(e) => {
                   e.stopPropagation();
                   router.push('/admin/users');
@@ -181,9 +181,9 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer hover:shadow-md transition-shadow bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Planos e Preços
               </CardTitle>
             </CardHeader>
@@ -197,9 +197,9 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer hover:shadow-md transition-shadow bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Consultas
               </CardTitle>
             </CardHeader>
@@ -213,9 +213,9 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
+          <Card className="cursor-pointer hover:shadow-md transition-shadow bg-background dark:bg-muted border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-foreground">
                 Relatórios
               </CardTitle>
             </CardHeader>
@@ -232,7 +232,7 @@ export default function AdminDashboardPage() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Recent Users */}
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader>
               <CardTitle>Usuários Recentes</CardTitle>
               <CardDescription>
@@ -245,11 +245,11 @@ export default function AdminDashboardPage() {
                   {stats.recentUsers.slice(0, 5).map((user) => (
                     <div key={user.id} className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium">{user.name}</p>
-                        <p className="text-sm text-gray-600">{user.email}</p>
+                        <p className="font-medium text-foreground">{user.name}</p>
+                        <p className="text-sm text-muted-foreground">{user.email}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-muted-foreground">
                           {new Date(user.createdAt).toLocaleDateString('pt-BR')}
                         </p>
                       </div>
@@ -257,8 +257,8 @@ export default function AdminDashboardPage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <div className="text-center py-8 text-muted-foreground">
+                  <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
                   <p>Nenhum usuário encontrado</p>
                 </div>
               )}
@@ -266,7 +266,7 @@ export default function AdminDashboardPage() {
           </Card>
 
           {/* Recent Consultations */}
-          <Card>
+          <Card className="bg-background dark:bg-muted border-border">
             <CardHeader>
               <CardTitle>Consultas Recentes</CardTitle>
               <CardDescription>
@@ -279,8 +279,8 @@ export default function AdminDashboardPage() {
                   {stats.recentConsultations.slice(0, 5).map((consultation) => (
                     <div key={consultation.id} className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium">{consultation.title}</p>
-                        <p className="text-sm text-gray-600">{consultation.user.name}</p>
+                        <p className="font-medium text-foreground">{consultation.title}</p>
+                        <p className="text-sm text-muted-foreground">{consultation.user.name}</p>
                       </div>
                       <div className="text-right">
                         <Badge 
@@ -294,7 +294,7 @@ export default function AdminDashboardPage() {
                            consultation.status === 'SCHEDULED' ? 'Agendada' :
                            consultation.status === 'CANCELLED' ? 'Cancelada' : 'Em andamento'}
                         </Badge>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-muted-foreground mt-1">
                           {new Date(consultation.scheduledAt).toLocaleDateString('pt-BR')}
                         </p>
                       </div>
@@ -302,8 +302,8 @@ export default function AdminDashboardPage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Stethoscope className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <div className="text-center py-8 text-muted-foreground">
+                  <Stethoscope className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
                   <p>Nenhuma consulta encontrada</p>
                 </div>
               )}
