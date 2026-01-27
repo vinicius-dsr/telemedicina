@@ -43,18 +43,18 @@ export default function HistoryPage() {
   const userWithRole = session?.user as { name?: string; role?: string } | undefined
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole={userWithRole?.role} userName={userWithRole?.name ?? undefined} />
       
       <div className="lg:pl-64 xl:pl-72">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="mb-6 flex items-center gap-3">
-            <Clock className="h-8 w-8 text-orange-600" />
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Histórico</h1>
+            <Clock className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Histórico</h1>
           </div>
         {items.length === 0 ? (
           <Card>
-            <CardContent className="py-12 text-center text-gray-600">Nenhum item no histórico.</CardContent>
+            <CardContent className="py-12 text-center text-muted-foreground">Nenhum item no histórico.</CardContent>
           </Card>
         ) : (
           <div className="space-y-4">

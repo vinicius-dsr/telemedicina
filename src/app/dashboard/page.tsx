@@ -278,13 +278,13 @@ export default function DashboardPage() {
                       <Badge 
                         variant={
                           consultation.status === 'COMPLETED' ? 'default' :
-                          consultation.status === 'SCHEDULED' ? 'secondary' :
+                          consultation.status === 'SCHEDULED' || consultation.status === 'CONFIRMED' ? 'secondary' :
                           'destructive'
                         }
                         className="text-xs self-start sm:self-center"
                       >
                         {consultation.status === 'COMPLETED' ? 'Concluída' :
-                         consultation.status === 'SCHEDULED' ? 'Agendada' :
+                         consultation.status === 'SCHEDULED' || consultation.status === 'CONFIRMED' ? 'Agendada' :
                          consultation.status === 'CANCELLED' ? 'Cancelada' : 'Em andamento'}
                       </Badge>
                     </div>

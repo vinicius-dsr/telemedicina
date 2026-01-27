@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
@@ -21,7 +21,8 @@ import {
   BarChart3,
   User,
   CreditCard,
-  Shield
+  Shield,
+  Bell
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -32,8 +33,10 @@ interface SidebarProps {
 
 export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const [doctorUnreadCount, setDoctorUnreadCount] = useState(0)
   const pathname = usePathname()
   const router = useRouter()
+  const { data: session } = useSession()
 
   const toggleMobile = () => setIsMobileOpen(!isMobileOpen)
 
@@ -53,6 +56,7 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
   const doctorMenuItems = [
     { icon: Home, label: 'Dashboard', href: '/doctor' },
     { icon: Calendar, label: 'Consultas', href: '/consultations' },
+    { icon: Bell, label: 'Notificações', href: '/doctor/notifications', badgeCount: doctorUnreadCount },
     { icon: FileText, label: 'Prontuários', href: '/medical-records' },
     { icon: Settings, label: 'Configurações', href: '/settings' },
   ]
@@ -70,6 +74,24 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
     userRole === 'ADMIN' ? adminMenuItems :
     userRole === 'DOCTOR' ? doctorMenuItems :
     patientMenuItems
+
+  useEffect(() => {
+    if (userRole !== 'DOCTOR') return
+    if (!session?.user?.id) return
+
+    const fetchNotifications = async () => {
+      try {
+        const response = await fetch('/api/notifications')
+        if (!response.ok) return
+        const data = await response.json()
+        setDoctorUnreadCount(data.unreadCount || 0)
+      } catch (error) {
+        console.error('Erro ao buscar notificações:', error)
+      }
+    }
+
+    fetchNotifications()
+  }, [pathname, session?.user?.id, userRole])
 
   const SidebarContent = () => (
     <>
@@ -109,7 +131,8 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
         <ul className="space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon
-            const isActive = pathname === item.href || pathname?.startsWith(item.href + '/')
+            const exactMatchOnly = new Set(['/admin', '/dashboard', '/doctor'])
+            const isActive = pathname === item.href || (!exactMatchOnly.has(item.href) && pathname?.startsWith(item.href + '/'))
             
             return (
               <li key={item.href}>
@@ -125,6 +148,18 @@ export function Sidebar({ userRole = 'PATIENT', userName }: SidebarProps) {
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
                   <span className="font-medium">{item.label}</span>
+                  {'badgeCount' in item && item.badgeCount > 0 && (
+                    <span
+                      className={cn(
+                        'ml-auto min-w-[22px] rounded-full px-2 py-0.5 text-center text-xs font-semibold',
+                        isActive
+                          ? 'bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground'
+                          : 'bg-sidebar-primary text-sidebar-primary-foreground'
+                      )}
+                    >
+                      {item.badgeCount}
+                    </span>
+                  )}
                 </Link>
               </li>
             )

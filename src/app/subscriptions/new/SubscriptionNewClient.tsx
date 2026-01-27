@@ -120,10 +120,10 @@ export default function SubscriptionNewClient() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Carregando...</p>
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          <p className="mt-4 text-muted-foreground">Carregando...</p>
         </div>
       </div>
     )
@@ -131,9 +131,9 @@ export default function SubscriptionNewClient() {
 
   if (!plan) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Plano não encontrado</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Plano não encontrado</h1>
           <Link href="/plans">
             <Button>Voltar aos Planos</Button>
           </Link>
@@ -143,13 +143,13 @@ export default function SubscriptionNewClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">Nova Assinatura</h1>
+              <h1 className="text-2xl font-bold text-foreground">Nova Assinatura</h1>
             </div>
             <Link href="/plans">
               <Button variant="outline">Voltar aos Planos</Button>
@@ -197,14 +197,14 @@ export default function SubscriptionNewClient() {
                   <span className="font-medium">{plan.name}</span>
                   <span className="text-2xl font-bold">R$ {plan.price.toFixed(2)}</span>
                 </div>
-                <p className="text-sm text-gray-600">{plan.description}</p>
+                <p className="text-sm text-muted-foreground">{plan.description}</p>
                 
                 <div className="space-y-2">
                   <h4 className="font-medium">Recursos incluídos:</h4>
                   <ul className="space-y-1">
                     {plan.features.map((feature, index) => (
                       <li key={index} className="flex items-center text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                        <CheckCircle className="h-4 w-4 text-primary mr-2" />
                         {feature}
                       </li>
                     ))}
@@ -216,7 +216,7 @@ export default function SubscriptionNewClient() {
                     <span className="font-medium">Total mensal:</span>
                     <span className="text-xl font-bold">R$ {plan.price.toFixed(2)}</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Cobrança recorrente a cada {plan.duration} dias
                   </p>
                 </div>
@@ -238,29 +238,29 @@ export default function SubscriptionNewClient() {
                 <div className="space-y-3">
                   <Label>Forma de Pagamento</Label>
                   <div className="space-y-2">
-                    <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50">
                       <input
                         type="radio"
                         name="paymentMethod"
                         value="credit_card"
                         checked={paymentMethod === 'credit_card'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="h-4 w-4 text-blue-600"
+                        className="h-4 w-4 text-primary"
                       />
-                      <CreditCard className="h-5 w-5 text-gray-400" />
+                      <CreditCard className="h-5 w-5 text-muted-foreground/60" />
                       <span>Cartão de Crédito</span>
                     </label>
                     
-                    <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50">
                       <input
                         type="radio"
                         name="paymentMethod"
                         value="pix"
                         checked={paymentMethod === 'pix'}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="h-4 w-4 text-blue-600"
+                        className="h-4 w-4 text-primary"
                       />
-                      <Shield className="h-5 w-5 text-gray-400" />
+                      <Shield className="h-5 w-5 text-muted-foreground/60" />
                       <span>PIX</span>
                     </label>
                   </div>
@@ -311,17 +311,17 @@ export default function SubscriptionNewClient() {
 
                 {/* PIX Info */}
                 {paymentMethod === 'pix' && (
-                  <div className="p-4 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-blue-800">
+                  <div className="p-4 bg-primary/10 rounded-lg">
+                    <p className="text-sm text-primary/80">
                       Após confirmar a assinatura, você receberá as instruções para pagamento via PIX.
                     </p>
                   </div>
                 )}
 
                 {/* Security Notice */}
-                <div className="flex items-start space-x-2 p-3 bg-green-50 rounded-lg">
-                  <Shield className="h-5 w-5 text-green-600 mt-0.5" />
-                  <div className="text-sm text-green-800">
+                <div className="flex items-start space-x-2 p-3 bg-muted rounded-lg">
+                  <Shield className="h-5 w-5 text-primary mt-0.5" />
+                  <div className="text-sm text-foreground">
                     <p className="font-medium">Pagamento seguro</p>
                     <p>Seus dados são protegidos com criptografia SSL</p>
                   </div>
@@ -346,13 +346,13 @@ export default function SubscriptionNewClient() {
                   )}
                 </Button>
 
-                <p className="text-xs text-gray-500 text-center">
+                <p className="text-xs text-muted-foreground text-center">
                   Ao assinar, você concorda com nossos{' '}
-                  <Link href="/terms" className="text-blue-600 hover:underline">
+                  <Link href="/terms" className="text-primary hover:underline">
                     Termos de Uso
                   </Link>
                   {' '}e{' '}
-                  <Link href="/privacy" className="text-blue-600 hover:underline">
+                  <Link href="/privacy" className="text-primary hover:underline">
                     Política de Privacidade
                   </Link>
                 </p>

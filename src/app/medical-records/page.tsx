@@ -45,18 +45,18 @@ export default function MedicalRecordsPage() {
   const userWithRole = session?.user as { name?: string; role?: string } | undefined
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Sidebar userRole={userWithRole?.role} userName={userWithRole?.name ?? undefined} />
       
       <div className="lg:pl-64 xl:pl-72">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
           <div className="mb-6 flex items-center gap-3">
-            <FileText className="h-8 w-8 text-purple-600" />
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Prontuário</h1>
+            <FileText className="h-8 w-8 text-primary" />
+            <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Prontuário</h1>
           </div>
         {records.length === 0 ? (
           <Card>
-            <CardContent className="py-12 text-center text-gray-600">Nenhum registro encontrado.</CardContent>
+            <CardContent className="py-12 text-center text-muted-foreground">Nenhum registro encontrado.</CardContent>
           </Card>
         ) : (
           <div className="space-y-4">
@@ -69,7 +69,7 @@ export default function MedicalRecordsPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-700 mb-3">{r.description}</p>
+                  <p className="text-muted-foreground mb-3">{r.description}</p>
                   {r.diagnosis && <p className="text-sm"><strong>Diagnóstico:</strong> {r.diagnosis}</p>}
                   {r.prescription && <p className="text-sm"><strong>Prescrição:</strong> {r.prescription}</p>}
                 </CardContent>

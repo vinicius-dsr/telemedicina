@@ -36,11 +36,18 @@ interface AlternativeDoctor {
   name: string
 }
 
+interface Patient {
+  id: string
+  name: string
+  email: string
+}
+
 export default function NewConsultationPage() {
   const { data: session } = useSession()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [doctors, setDoctors] = useState<Doctor[]>([])
+  const [patients, setPatients] = useState<Patient[]>([])
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [hasActiveSubscription, setHasActiveSubscription] = useState<boolean | null>(null)
   const [alternativeDoctors, setAlternativeDoctors] = useState<AlternativeDoctor[]>([])
@@ -49,9 +56,12 @@ export default function NewConsultationPage() {
     title: '',
     description: '',
     doctorId: '',
+    patientId: '',
     duration: '30',
     time: ''
   })
+  const userWithRole = session?.user as { id?: string; role?: string } | undefined
+  const isPrivilegedUser = userWithRole?.role === 'ADMIN' || userWithRole?.role === 'DOCTOR'
 
   useEffect(() => {
     if (!session) {
@@ -60,8 +70,12 @@ export default function NewConsultationPage() {
     }
 
     fetchDoctors()
-    checkSubscription()
-  }, [session, router])
+    if (isPrivilegedUser) {
+      fetchPatients()
+    } else {
+      checkSubscription()
+    }
+  }, [session, router, isPrivilegedUser])
 
   const checkSubscription = async () => {
     try {
@@ -84,10 +98,29 @@ export default function NewConsultationPage() {
       if (response.ok) {
         const data = await response.json()
         setDoctors(data.doctors || [])
+        if (userWithRole?.role === 'DOCTOR' && !formData.doctorId) {
+          const match = (data.doctors || []).find((doctor: Doctor) => doctor.id === userWithRole?.id)
+          if (match) {
+            setFormData((prev) => ({ ...prev, doctorId: match.id }))
+          }
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar médicos:', error)
       toast.error('Erro ao carregar lista de médicos')
+    }
+  }
+
+  const fetchPatients = async () => {
+    try {
+      const response = await fetch('/api/patients')
+      if (response.ok) {
+        const data = await response.json()
+        setPatients(data.patients || [])
+      }
+    } catch (error) {
+      console.error('Erro ao carregar pacientes:', error)
+      toast.error('Erro ao carregar lista de pacientes')
     }
   }
 
@@ -111,6 +144,11 @@ export default function NewConsultationPage() {
       return
     }
 
+    if (isPrivilegedUser && !formData.patientId) {
+      toast.error('Por favor, selecione o paciente')
+      return
+    }
+
     setIsLoading(true)
 
     try {
@@ -128,6 +166,7 @@ export default function NewConsultationPage() {
           title: formData.title,
           description: formData.description,
           doctorId: formData.doctorId,
+          userId: isPrivilegedUser ? formData.patientId : undefined,
           scheduledAt: scheduledAt.toISOString(),
           duration: parseInt(formData.duration)
         }),
@@ -172,9 +211,9 @@ export default function NewConsultationPage() {
   const timeSlots = generateTimeSlots()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
@@ -185,8 +224,8 @@ export default function NewConsultationPage() {
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
-              <Stethoscope className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">Agendar Nova Consulta</h1>
+              <Stethoscope className="h-8 w-8 text-primary mr-2" />
+              <h1 className="text-2xl font-bold text-foreground">Agendar Nova Consulta</h1>
             </div>
           </div>
         </div>
@@ -194,18 +233,18 @@ export default function NewConsultationPage() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Aviso de assinatura inativa */}
-        {hasActiveSubscription === false && (
-          <Card className="mb-6 border-orange-300 bg-orange-50">
+        {hasActiveSubscription === false && !isPrivilegedUser && (
+          <Card className="mb-6 border-amber-400/40 bg-amber-500/10">
             <CardHeader>
-              <CardTitle className="text-orange-900">Assinatura Necessária</CardTitle>
-              <CardDescription className="text-orange-700">
+              <CardTitle className="text-amber-800 dark:text-amber-300">Assinatura Necessária</CardTitle>
+              <CardDescription className="text-amber-700 dark:text-amber-200">
                 Você precisa de uma assinatura ativa para agendar consultas
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button 
                 onClick={() => router.push('/plans')}
-                className="bg-orange-600 hover:bg-orange-700"
+                className="bg-amber-600 hover:bg-amber-700"
               >
                 Ver Planos Disponíveis
               </Button>
@@ -215,13 +254,13 @@ export default function NewConsultationPage() {
 
         {/* Médicos alternativos disponíveis */}
         {showAlternatives && alternativeDoctors.length > 0 && (
-          <Card className="mb-6 border-blue-300 bg-blue-50">
+          <Card className="mb-6 border-primary/20 bg-primary/10">
             <CardHeader>
-              <CardTitle className="text-blue-900 flex items-center">
-                <User className="h-5 w-5 mr-2" />
+              <CardTitle className="text-primary flex items-center">
+                <User className="h-5 w-5 mr-2 text-primary" />
                 Médicos Disponíveis Neste Horário
               </CardTitle>
-              <CardDescription className="text-blue-700">
+              <CardDescription className="text-primary/80">
                 O médico selecionado não está disponível, mas temos outras opções para você
               </CardDescription>
             </CardHeader>
@@ -230,10 +269,10 @@ export default function NewConsultationPage() {
                 {alternativeDoctors.map((altDoctor) => (
                   <div 
                     key={altDoctor.id}
-                    className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-200"
+                    className="flex items-center justify-between p-3 bg-card rounded-lg border border-border"
                   >
                     <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-blue-600" />
+                      <User className="h-4 w-4 text-primary" />
                       <span className="font-medium">{altDoctor.name}</span>
                     </div>
                     <Button
@@ -267,7 +306,7 @@ export default function NewConsultationPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <CalendarIcon className="h-5 w-5 mr-2 text-blue-600" />
+              <CalendarIcon className="h-5 w-5 mr-2 text-primary" />
               Informações da Consulta
             </CardTitle>
             <CardDescription>
@@ -316,7 +355,7 @@ export default function NewConsultationPage() {
                           <div>
                             <div className="font-medium">{doctor.name}</div>
                             {doctor.specialty && (
-                              <div className="text-sm text-gray-500">{doctor.specialty}</div>
+                              <div className="text-sm text-muted-foreground">{doctor.specialty}</div>
                             )}
                           </div>
                         </div>
@@ -325,6 +364,30 @@ export default function NewConsultationPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              {isPrivilegedUser && (
+                <div className="space-y-2">
+                  <Label>Paciente *</Label>
+                  <Select value={formData.patientId} onValueChange={(value) => handleInputChange('patientId', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um paciente" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {patients.map((patient) => (
+                        <SelectItem key={patient.id} value={patient.id}>
+                          <div className="flex items-center">
+                            <User className="h-4 w-4 mr-2" />
+                            <div>
+                              <div className="font-medium">{patient.name}</div>
+                              <div className="text-sm text-muted-foreground">{patient.email}</div>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Seleção de Data */}
@@ -397,17 +460,20 @@ export default function NewConsultationPage() {
               </div>
 
               {/* Resumo da Consulta */}
-              {selectedDate && formData.time && formData.doctorId && (
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <h3 className="font-medium text-blue-900 mb-2 flex items-center">
+              {selectedDate && formData.time && formData.doctorId && (!isPrivilegedUser || formData.patientId) && (
+                <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+                  <h3 className="font-medium text-primary mb-2 flex items-center">
                     <CheckCircle className="h-4 w-4 mr-2" />
                     Resumo do Agendamento
                   </h3>
-                  <div className="text-sm text-blue-800 space-y-1">
+                  <div className="text-sm text-foreground space-y-1">
                     <p><strong>Data:</strong> {format(selectedDate, "PPP", { locale: ptBR })}</p>
                     <p><strong>Horário:</strong> {formData.time}</p>
                     <p><strong>Duração:</strong> {formData.duration} minutos</p>
                     <p><strong>Médico:</strong> {doctors.find(d => d.id === formData.doctorId)?.name}</p>
+                    {isPrivilegedUser && (
+                      <p><strong>Paciente:</strong> {patients.find(p => p.id === formData.patientId)?.name}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -424,7 +490,7 @@ export default function NewConsultationPage() {
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isLoading || hasActiveSubscription === false}
+                  disabled={isLoading || (!isPrivilegedUser && hasActiveSubscription === false)}
                   className="flex-1"
                 >
                   {isLoading ? (
